@@ -11,7 +11,7 @@ npm run demo:email
 
 Open **http://127.0.0.1:4320**. Fill in the sender, subject, and body, or choose a clickable example. **Compare** runs both models; **Local only** makes no teacher request, and **Jev only** calls the API. Choosing an example does not submit it. Editing the email clears old results and cancels an outstanding Jev request.
 
-The local model runs as q8 WebAssembly in a browser worker, using the same canonical `{body,from,subject}` JSON as training. Its displayed time excludes model loading. Jev's time includes the request through the local server and the external API. Both show all six category probabilities; JSON responses are available below the results.
+The local model runs as q8 WebAssembly in a browser worker, using the same canonical `{body,from,subject}` JSON as training. Its displayed time excludes model loading. Jev's time includes the request through the local server and the external API. Both show all six category probabilities.
 
 Jev uses the question saved in the trained model. The shared API key stays in the server process and is not sent to the browser. It expires at the end of September 25, 2026 PST (September 26 at 08:00 UTC), enforced by the server. After expiry, or when no shared key is configured, visitors can enter their own Vercel API key. Visitor keys stay in page memory and are sent only with Jev requests; they are not saved. Clicking **Jev only** or **Compare** sends that email to Vercel AI Gateway/TypeSafe; the example does not save emails or responses. The server binds only to `127.0.0.1`, accepts same-origin API requests, and limits Jev to one request at a time. API failures leave the local result visible. Restart the server after changing its environment.
 

@@ -3,7 +3,6 @@ import { emailState, examples } from '/email.js';
 
 const $ = id => document.getElementById(id);
 let config, classifier, loading, loaded = false, busy = false, revision = 0, controller;
-let responses = {};
 let expiryTimer;
 const teacherReady = () => Boolean(config?.teacherReady || $('api-key').value.trim());
 function expireSharedKey() {
@@ -34,8 +33,7 @@ function buttons() {
 function clear() {
   revision++;
   controller?.abort();
-  $('results').hidden = true; $('json-panel').hidden = true; $('error').hidden = true;
-  responses = {};
+  $('results').hidden = true; $('error').hidden = true;
   for (const button of $('examples').children) {
     const sample = examples.find(example => example.name === button.textContent);
     button.setAttribute('aria-pressed', String(['from', 'subject', 'body'].every(key => $(key).value === sample[key])));
@@ -68,9 +66,6 @@ function render(name, response, ms) {
   }
   $(`${name}-time`).textContent = `${ms.toFixed(1)} ms`;
   $(`${name}-time`).title = name === 'local' ? 'Browser inference time. Model loading excluded.' : 'Round-trip time including the server and Jev API.';
-  responses[name] = response;
-  $('json').textContent = JSON.stringify(responses, null, 2);
-  $('json-panel').hidden = false;
 }
 function failed(name, message) {
   panel(name, message);
@@ -102,7 +97,7 @@ async function classify(mode) {
   try { state = emailState({ from: $('from').value, subject: $('subject').value, body: $('body').value }); }
   catch (cause) { error(cause.message); return; }
   const version = revision;
-  busy = true; buttons(); responses = {};
+  busy = true; buttons();
   $('results').hidden = false; $('results').dataset.mode = mode;
   $('local-panel').hidden = mode === 'jev'; $('jev-panel').hidden = mode === 'local';
   controller = new AbortController();

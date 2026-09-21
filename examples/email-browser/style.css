@@ -75,10 +75,6 @@ h3 { font-size: 14px; font-weight: 550; margin: 0; }
 #results li span:last-child { font-variant-numeric: tabular-nums; }
 #results section > p { font-size: 12px; margin: 0; color: var(--muted); }
 #results section > p.failed { color: #9d4236; }
-#json-panel { padding: 0 24px 20px; color: var(--muted); font-size: 11px; }
-summary { width: fit-content; }
-summary span { display: inline-block; margin-left: 3px; }
-#json { white-space: pre-wrap; overflow-wrap: anywhere; max-height: 300px; margin-bottom: 0; }
 .code-section { margin-top: 76px; }
 .code-card { background: #f4edde; border: 1px solid var(--line); border-radius: 10px; margin-top: 16px; overflow: hidden; }
 .code-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 18px; border-bottom: 1px solid var(--line); }
