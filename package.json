@@ -1,6 +1,6 @@
 {
   "name": "jimothy",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "Train portable local classifiers from Jev-compatible datasets.",
   "type": "module",
   "engines": {
@@ -53,5 +53,14 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
+  },
+  "author": "Andrew Prifer",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AndrewPrifer/jimothy.git"
+  },
+  "homepage": "https://github.com/AndrewPrifer/jimothy#readme",
+  "bugs": {
+    "url": "https://github.com/AndrewPrifer/jimothy/issues"
   }
 }
