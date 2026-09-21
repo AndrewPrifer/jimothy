@@ -1,0 +1,752 @@
+{
+  "createdAt": "2026-09-20T06:14:23.741Z",
+  "dataset": {
+    "dataset": "BANKING77",
+    "repository": "https://github.com/PolyAI-LDN/task-specific-datasets",
+    "revision": "57ec275d8078af65b7731c2a98be812d844a6d6b",
+    "license": "CC-BY-4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "citation": "Casanueva, Temcinas, Gerz, Henderson, and Vulic. Efficient Intent Detection with Dual Sentence Encoders. NLP4ConvAI, ACL 2020.",
+    "paper": "https://arxiv.org/abs/2003.04807",
+    "sourceChecksums": {
+      "banking_data/train.csv": "b06e26ac675513959a63135f11b94ea7786ed02da65db93a5650d8838cbc664b",
+      "banking_data/test.csv": "d12d6e3bc4c3103966ae786dc435913c0c563dfa328f5a3646d0e62cfeeb474d",
+      "banking_data/categories.json": "53261da888122daf2d120d925458631d9619e15d82e56052e7a42e535ce32b63",
+      "LICENSE": "7e7170e3cebf88a9f60c7b8421418323c09304da1af4d5e90f4da1dc1c8a2661",
+      "README.md": "7b9ce9069931cc2de89dce8c7ffb53d07806cf413601ccf133b9af5227b3a373"
+    },
+    "labels": 77,
+    "seed": 42,
+    "originalCounts": {
+      "train": 10003,
+      "test": 3080
+    },
+    "preparedCounts": {
+      "train": 8023,
+      "validation": 1969,
+      "test": 3079
+    },
+    "exclusions": {
+      "duplicate_within_test": 1,
+      "duplicate_within_train": 4,
+      "input_already_in_official_test": 7
+    },
+    "splitPolicy": "Preserve official test membership except duplicate normalized inputs; remove training overlap; stratified 20% validation from remaining official train.",
+    "normalizationForDeduplication": "NFKC, casefold, collapse whitespace. Original text is retained for model input.",
+    "targetPolicy": "Original human labels. Hard Choice outputs are a format conversion, not Jev responses or calibrated probability distributions.",
+    "criteriaPolicy": "Descriptions mechanically expand label names; they are not official definitions and should be reviewed before teacher labelling.",
+    "perClass": {
+      "Refund_not_showing_up": {
+        "train": 130,
+        "validation": 32,
+        "test": 40
+      },
+      "activate_my_card": {
+        "train": 128,
+        "validation": 31,
+        "test": 40
+      },
+      "age_limit": {
+        "train": 88,
+        "validation": 22,
+        "test": 40
+      },
+      "apple_pay_or_google_pay": {
+        "train": 101,
+        "validation": 25,
+        "test": 40
+      },
+      "atm_support": {
+        "train": 68,
+        "validation": 17,
+        "test": 39
+      },
+      "automatic_top_up": {
+        "train": 102,
+        "validation": 25,
+        "test": 40
+      },
+      "balance_not_updated_after_bank_transfer": {
+        "train": 137,
+        "validation": 34,
+        "test": 40
+      },
+      "balance_not_updated_after_cheque_or_cash_deposit": {
+        "train": 145,
+        "validation": 36,
+        "test": 40
+      },
+      "beneficiary_not_allowed": {
+        "train": 125,
+        "validation": 31,
+        "test": 40
+      },
+      "cancel_transfer": {
+        "train": 126,
+        "validation": 31,
+        "test": 40
+      },
+      "card_about_to_expire": {
+        "train": 104,
+        "validation": 25,
+        "test": 40
+      },
+      "card_acceptance": {
+        "train": 46,
+        "validation": 11,
+        "test": 40
+      },
+      "card_arrival": {
+        "train": 123,
+        "validation": 30,
+        "test": 40
+      },
+      "card_delivery_estimate": {
+        "train": 90,
+        "validation": 22,
+        "test": 40
+      },
+      "card_linking": {
+        "train": 112,
+        "validation": 27,
+        "test": 40
+      },
+      "card_not_working": {
+        "train": 89,
+        "validation": 22,
+        "test": 40
+      },
+      "card_payment_fee_charged": {
+        "train": 150,
+        "validation": 37,
+        "test": 40
+      },
+      "card_payment_not_recognised": {
+        "train": 135,
+        "validation": 33,
+        "test": 40
+      },
+      "card_payment_wrong_exchange_rate": {
+        "train": 134,
+        "validation": 33,
+        "test": 40
+      },
+      "card_swallowed": {
+        "train": 49,
+        "validation": 12,
+        "test": 40
+      },
+      "cash_withdrawal_charge": {
+        "train": 142,
+        "validation": 35,
+        "test": 40
+      },
+      "cash_withdrawal_not_recognised": {
+        "train": 128,
+        "validation": 32,
+        "test": 40
+      },
+      "change_pin": {
+        "train": 96,
+        "validation": 24,
+        "test": 40
+      },
+      "compromised_card": {
+        "train": 68,
+        "validation": 17,
+        "test": 40
+      },
+      "contactless_not_working": {
+        "train": 28,
+        "validation": 7,
+        "test": 40
+      },
+      "country_support": {
+        "train": 103,
+        "validation": 25,
+        "test": 40
+      },
+      "declined_card_payment": {
+        "train": 123,
+        "validation": 30,
+        "test": 40
+      },
+      "declined_cash_withdrawal": {
+        "train": 139,
+        "validation": 34,
+        "test": 40
+      },
+      "declined_transfer": {
+        "train": 107,
+        "validation": 26,
+        "test": 40
+      },
+      "direct_debit_payment_not_recognised": {
+        "train": 146,
+        "validation": 36,
+        "test": 40
+      },
+      "disposable_card_limits": {
+        "train": 97,
+        "validation": 24,
+        "test": 40
+      },
+      "edit_personal_details": {
+        "train": 97,
+        "validation": 24,
+        "test": 40
+      },
+      "exchange_charge": {
+        "train": 97,
+        "validation": 24,
+        "test": 40
+      },
+      "exchange_rate": {
+        "train": 90,
+        "validation": 22,
+        "test": 40
+      },
+      "exchange_via_app": {
+        "train": 95,
+        "validation": 23,
+        "test": 40
+      },
+      "extra_charge_on_statement": {
+        "train": 133,
+        "validation": 33,
+        "test": 40
+      },
+      "failed_transfer": {
+        "train": 110,
+        "validation": 27,
+        "test": 40
+      },
+      "fiat_currency_support": {
+        "train": 101,
+        "validation": 25,
+        "test": 40
+      },
+      "get_disposable_virtual_card": {
+        "train": 78,
+        "validation": 19,
+        "test": 40
+      },
+      "get_physical_card": {
+        "train": 85,
+        "validation": 21,
+        "test": 40
+      },
+      "getting_spare_card": {
+        "train": 104,
+        "validation": 25,
+        "test": 40
+      },
+      "getting_virtual_card": {
+        "train": 79,
+        "validation": 19,
+        "test": 40
+      },
+      "lost_or_stolen_card": {
+        "train": 66,
+        "validation": 16,
+        "test": 40
+      },
+      "lost_or_stolen_phone": {
+        "train": 97,
+        "validation": 24,
+        "test": 40
+      },
+      "order_physical_card": {
+        "train": 96,
+        "validation": 24,
+        "test": 40
+      },
+      "passcode_forgotten": {
+        "train": 84,
+        "validation": 21,
+        "test": 40
+      },
+      "pending_card_payment": {
+        "train": 128,
+        "validation": 31,
+        "test": 40
+      },
+      "pending_cash_withdrawal": {
+        "train": 115,
+        "validation": 28,
+        "test": 40
+      },
+      "pending_top_up": {
+        "train": 120,
+        "validation": 29,
+        "test": 40
+      },
+      "pending_transfer": {
+        "train": 119,
+        "validation": 29,
+        "test": 40
+      },
+      "pin_blocked": {
+        "train": 91,
+        "validation": 22,
+        "test": 40
+      },
+      "receiving_money": {
+        "train": 76,
+        "validation": 19,
+        "test": 40
+      },
+      "request_refund": {
+        "train": 136,
+        "validation": 33,
+        "test": 40
+      },
+      "reverted_card_payment?": {
+        "train": 129,
+        "validation": 32,
+        "test": 40
+      },
+      "supported_cards_and_currencies": {
+        "train": 104,
+        "validation": 25,
+        "test": 40
+      },
+      "terminate_account": {
+        "train": 87,
+        "validation": 21,
+        "test": 40
+      },
+      "top_up_by_bank_transfer_charge": {
+        "train": 89,
+        "validation": 22,
+        "test": 40
+      },
+      "top_up_by_card_charge": {
+        "train": 92,
+        "validation": 22,
+        "test": 40
+      },
+      "top_up_by_cash_or_cheque": {
+        "train": 92,
+        "validation": 22,
+        "test": 40
+      },
+      "top_up_failed": {
+        "train": 116,
+        "validation": 29,
+        "test": 40
+      },
+      "top_up_limits": {
+        "train": 78,
+        "validation": 19,
+        "test": 40
+      },
+      "top_up_reverted": {
+        "train": 117,
+        "validation": 29,
+        "test": 40
+      },
+      "topping_up_by_card": {
+        "train": 83,
+        "validation": 20,
+        "test": 40
+      },
+      "transaction_charged_twice": {
+        "train": 140,
+        "validation": 35,
+        "test": 40
+      },
+      "transfer_fee_charged": {
+        "train": 138,
+        "validation": 34,
+        "test": 40
+      },
+      "transfer_into_account": {
+        "train": 91,
+        "validation": 22,
+        "test": 40
+      },
+      "transfer_not_received_by_recipient": {
+        "train": 137,
+        "validation": 34,
+        "test": 40
+      },
+      "transfer_timing": {
+        "train": 103,
+        "validation": 25,
+        "test": 40
+      },
+      "unable_to_verify_identity": {
+        "train": 82,
+        "validation": 20,
+        "test": 40
+      },
+      "verify_my_identity": {
+        "train": 84,
+        "validation": 20,
+        "test": 40
+      },
+      "verify_source_of_funds": {
+        "train": 91,
+        "validation": 22,
+        "test": 40
+      },
+      "verify_top_up": {
+        "train": 101,
+        "validation": 25,
+        "test": 40
+      },
+      "virtual_card_not_working": {
+        "train": 33,
+        "validation": 8,
+        "test": 40
+      },
+      "visa_or_mastercard": {
+        "train": 108,
+        "validation": 27,
+        "test": 40
+      },
+      "why_verify_identity": {
+        "train": 97,
+        "validation": 24,
+        "test": 40
+      },
+      "wrong_amount_of_cash_received": {
+        "train": 144,
+        "validation": 36,
+        "test": 40
+      },
+      "wrong_exchange_rate_for_cash_withdrawal": {
+        "train": 131,
+        "validation": 32,
+        "test": 40
+      }
+    },
+    "preparedChecksums": {
+      "LICENSE.txt": "7e7170e3cebf88a9f60c7b8421418323c09304da1af4d5e90f4da1dc1c8a2661",
+      "excluded.json": "e4e51d6dc2f4efda463ec2b9497e4705629e989b0a496f75a5af768b0e303817",
+      "task.json": "9c5a483420c0603025cc2a10be98b7ee71ae15ffa6272db0e45e40b71f625ca2",
+      "test.inputs.jsonl": "ca9681b840a729a1b78223256992d1c668daa58b475d04c9fd9e261b077035f2",
+      "test.jsonl": "4800208874fa4e95dae169d3f03bb85d775c7ffb9a655ffafc7cade2a3137220",
+      "test.outputs.jsonl": "c7c956d9eef5c9eac070e465322ca016ca4fa54d5e67b53c6519b9c6019ea133",
+      "train.inputs.jsonl": "5ec0d72ca88f43ee162d01763ea3b77a1acb5247505c26fce14fbc2ea4f4e558",
+      "train.jsonl": "7613e05eb59e273a9dfb08842620363503761d885b8f863e03c86210d78692e7",
+      "train.outputs.jsonl": "8bb539d1fd2b48e45e626394ac5e11aab5f143244d2128b4f9fbb81063cb49fd",
+      "validation.inputs.jsonl": "de2f66fbdd79ae64c283d2b464dc83417762533a45fdfe1abb2b3c4f4938144e",
+      "validation.jsonl": "e380c677ea687783155e17c1e5fe49f83a3121066bd0f624ac357cbbfe875ac4",
+      "validation.outputs.jsonl": "bb67f6ab791ea02cd4fde593978dbdbaf29d6ea7d04859bd89b44a94c0d03dba"
+    }
+  },
+  "environment": {
+    "node": "v25.6.0",
+    "platform": "darwin",
+    "arch": "arm64",
+    "osRelease": "25.6.0",
+    "cpu": "Apple M3 Max"
+  },
+  "settings": {
+    "epochs": 100,
+    "learningRate": 0.05,
+    "l2": 0.001,
+    "maxFeatures": 4096,
+    "threshold": 0.8,
+    "seed": 42
+  },
+  "protocol": "One fixed configuration per backend; validation loss selects epoch; cleaned official test is evaluated after fitting. No test-based tuning.",
+  "convertedPairsVerified": 8023,
+  "latencyProtocol": "One loaded model at a time; 20 warm-up calls then 200 sequential single-input SDK predictions spaced across test inputs. Includes tokenization, features, and head; excludes model loading. Local CPU timing, not Jev comparison.",
+  "models": {
+    "tfidf": {
+      "modelId": "local-7d899134fecb8b3c0901",
+      "training": {
+        "epochs": 91,
+        "bestEpoch": 61,
+        "learningRate": 0.05,
+        "l2": 0.001,
+        "dimensions": 4096,
+        "elapsedMs": 5490.285417
+      },
+      "validation": {
+        "count": 1969,
+        "humanAccuracy": 0.7176231589639411,
+        "macroF1": 0.6679235660147281,
+        "softTargetCrossEntropy": 3.132435257995468,
+        "operatingPoint": {
+          "threshold": 0.8,
+          "accepted": 0,
+          "coverage": 0,
+          "targetAgreement": null,
+          "humanExamplesAccepted": 0,
+          "humanAccuracy": null
+        },
+        "coverageCurve": [
+          {
+            "threshold": 0,
+            "accepted": 1969,
+            "coverage": 1,
+            "targetAgreement": 0.7176231589639411,
+            "humanExamplesAccepted": 1969,
+            "humanAccuracy": 0.7176231589639411
+          },
+          {
+            "threshold": 0.5,
+            "accepted": 0,
+            "coverage": 0,
+            "targetAgreement": null,
+            "humanExamplesAccepted": 0,
+            "humanAccuracy": null
+          },
+          {
+            "threshold": 0.7,
+            "accepted": 0,
+            "coverage": 0,
+            "targetAgreement": null,
+            "humanExamplesAccepted": 0,
+            "humanAccuracy": null
+          },
+          {
+            "threshold": 0.8,
+            "accepted": 0,
+            "coverage": 0,
+            "targetAgreement": null,
+            "humanExamplesAccepted": 0,
+            "humanAccuracy": null
+          },
+          {
+            "threshold": 0.9,
+            "accepted": 0,
+            "coverage": 0,
+            "targetAgreement": null,
+            "humanExamplesAccepted": 0,
+            "humanAccuracy": null
+          },
+          {
+            "threshold": 0.95,
+            "accepted": 0,
+            "coverage": 0,
+            "targetAgreement": null,
+            "humanExamplesAccepted": 0,
+            "humanAccuracy": null
+          }
+        ]
+      },
+      "test": {
+        "count": 3079,
+        "humanAccuracy": 0.6947060734004546,
+        "macroF1": 0.6676571551390523,
+        "softTargetCrossEntropy": 3.2032480918732626,
+        "operatingPoint": {
+          "threshold": 0.8,
+          "accepted": 0,
+          "coverage": 0,
+          "targetAgreement": null,
+          "humanExamplesAccepted": 0,
+          "humanAccuracy": null
+        },
+        "coverageCurve": [
+          {
+            "threshold": 0,
+            "accepted": 3079,
+            "coverage": 1,
+            "targetAgreement": 0.6947060734004546,
+            "humanExamplesAccepted": 3079,
+            "humanAccuracy": 0.6947060734004546
+          },
+          {
+            "threshold": 0.5,
+            "accepted": 0,
+            "coverage": 0,
+            "targetAgreement": null,
+            "humanExamplesAccepted": 0,
+            "humanAccuracy": null
+          },
+          {
+            "threshold": 0.7,
+            "accepted": 0,
+            "coverage": 0,
+            "targetAgreement": null,
+            "humanExamplesAccepted": 0,
+            "humanAccuracy": null
+          },
+          {
+            "threshold": 0.8,
+            "accepted": 0,
+            "coverage": 0,
+            "targetAgreement": null,
+            "humanExamplesAccepted": 0,
+            "humanAccuracy": null
+          },
+          {
+            "threshold": 0.9,
+            "accepted": 0,
+            "coverage": 0,
+            "targetAgreement": null,
+            "humanExamplesAccepted": 0,
+            "humanAccuracy": null
+          },
+          {
+            "threshold": 0.95,
+            "accepted": 0,
+            "coverage": 0,
+            "targetAgreement": null,
+            "humanExamplesAccepted": 0,
+            "humanAccuracy": null
+          }
+        ]
+      },
+      "bundleBytes": 7237502,
+      "loadMs": 34.08558400000038,
+      "singleInputLatencyMs": {
+        "count": 200,
+        "p50": 0.021167000000787084,
+        "p95": 0.04366600000048493
+      }
+    },
+    "minilm": {
+      "modelId": "local-e275146b6b2453185a9a",
+      "training": {
+        "epochs": 43,
+        "bestEpoch": 13,
+        "learningRate": 0.05,
+        "l2": 0.001,
+        "dimensions": 384,
+        "elapsedMs": 94576.547125
+      },
+      "validation": {
+        "count": 1969,
+        "humanAccuracy": 0.8263077704418487,
+        "macroF1": 0.7911095351042187,
+        "softTargetCrossEntropy": 1.5685170709106517,
+        "operatingPoint": {
+          "threshold": 0.8,
+          "accepted": 0,
+          "coverage": 0,
+          "targetAgreement": null,
+          "humanExamplesAccepted": 0,
+          "humanAccuracy": null
+        },
+        "coverageCurve": [
+          {
+            "threshold": 0,
+            "accepted": 1969,
+            "coverage": 1,
+            "targetAgreement": 0.8263077704418487,
+            "humanExamplesAccepted": 1969,
+            "humanAccuracy": 0.8263077704418487
+          },
+          {
+            "threshold": 0.5,
+            "accepted": 103,
+            "coverage": 0.052310817673946165,
+            "targetAgreement": 1,
+            "humanExamplesAccepted": 103,
+            "humanAccuracy": 1
+          },
+          {
+            "threshold": 0.7,
+            "accepted": 0,
+            "coverage": 0,
+            "targetAgreement": null,
+            "humanExamplesAccepted": 0,
+            "humanAccuracy": null
+          },
+          {
+            "threshold": 0.8,
+            "accepted": 0,
+            "coverage": 0,
+            "targetAgreement": null,
+            "humanExamplesAccepted": 0,
+            "humanAccuracy": null
+          },
+          {
+            "threshold": 0.9,
+            "accepted": 0,
+            "coverage": 0,
+            "targetAgreement": null,
+            "humanExamplesAccepted": 0,
+            "humanAccuracy": null
+          },
+          {
+            "threshold": 0.95,
+            "accepted": 0,
+            "coverage": 0,
+            "targetAgreement": null,
+            "humanExamplesAccepted": 0,
+            "humanAccuracy": null
+          }
+        ]
+      },
+      "test": {
+        "count": 3079,
+        "humanAccuracy": 0.8051315362130562,
+        "macroF1": 0.786277828445386,
+        "softTargetCrossEntropy": 1.646741255375863,
+        "operatingPoint": {
+          "threshold": 0.8,
+          "accepted": 0,
+          "coverage": 0,
+          "targetAgreement": null,
+          "humanExamplesAccepted": 0,
+          "humanAccuracy": null
+        },
+        "coverageCurve": [
+          {
+            "threshold": 0,
+            "accepted": 3079,
+            "coverage": 1,
+            "targetAgreement": 0.8051315362130562,
+            "humanExamplesAccepted": 3079,
+            "humanAccuracy": 0.8051315362130562
+          },
+          {
+            "threshold": 0.5,
+            "accepted": 157,
+            "coverage": 0.05099058135758363,
+            "targetAgreement": 0.9936305732484076,
+            "humanExamplesAccepted": 157,
+            "humanAccuracy": 0.9936305732484076
+          },
+          {
+            "threshold": 0.7,
+            "accepted": 0,
+            "coverage": 0,
+            "targetAgreement": null,
+            "humanExamplesAccepted": 0,
+            "humanAccuracy": null
+          },
+          {
+            "threshold": 0.8,
+            "accepted": 0,
+            "coverage": 0,
+            "targetAgreement": null,
+            "humanExamplesAccepted": 0,
+            "humanAccuracy": null
+          },
+          {
+            "threshold": 0.9,
+            "accepted": 0,
+            "coverage": 0,
+            "targetAgreement": null,
+            "humanExamplesAccepted": 0,
+            "humanAccuracy": null
+          },
+          {
+            "threshold": 0.95,
+            "accepted": 0,
+            "coverage": 0,
+            "targetAgreement": null,
+            "humanExamplesAccepted": 0,
+            "humanAccuracy": null
+          }
+        ]
+      },
+      "bundleBytes": 24506196,
+      "loadMs": 69.05337500000314,
+      "singleInputLatencyMs": {
+        "count": 200,
+        "p50": 1.6070000000036089,
+        "p95": 3.2977499999979045
+      }
+    }
+  }
+}

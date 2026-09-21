@@ -1,0 +1,679 @@
+{
+  "format": "jev-distill-browser-calibration-experiment",
+  "version": 1,
+  "createdAt": "2026-09-21T00:51:50.097Z",
+  "provenance": {
+    "sourceModelId": "local-12db390845c77979bf83",
+    "sourceManifestSha256": "bf0328c6f002c2cc41ccb555b49b61cd68ce04408cce8fcb1812429afee68901",
+    "headSha256": "0566ac242589b3704a8327022e905b3b565f04fefb8f3fcdd80f907f42cbba71",
+    "encoder": {
+      "modelId": "Xenova/all-MiniLM-L6-v2",
+      "revision": "751bff37182d3f1213fa05d7196b954e230abad9",
+      "dtype": "fp16",
+      "sha256": "2cdb5e58291813b6d6e248ed69010100246821a367fa17b1b81ae9483744533d"
+    },
+    "tokenizerSha256": "da0e79933b9ed51798a3ae27893d3c5fa4a201126cef75586296df9b4d2c62a0",
+    "runtime": {
+      "@huggingface/transformers": "4.3.0",
+      "onnxruntime-web": "1.31.0-dev.20260914-8d85527a0"
+    },
+    "device": "webgpu",
+    "preprocessing": "canonical-json-v1",
+    "pooling": "mean",
+    "normalize": true,
+    "maxTokens": 256,
+    "calibrationBatchSize": 32,
+    "datasets": {
+      "uniqueExamples": 8023,
+      "duplicatesRemoved": 0,
+      "teacherModels": [],
+      "train": {
+        "count": 8023,
+        "sha256": "63400c4e26c75b6c5974366f050864ffbe03aef187137dcd8d24cb15bf37a73e"
+      },
+      "validation": {
+        "count": 1969,
+        "sha256": "fcee65c7e3bb532295c2b5d58ad64bb622c7796c505059f5555d62bcdc2544f5",
+        "source": "explicit"
+      },
+      "development": {
+        "tuning": {
+          "count": 1037,
+          "sha256": "d6ed2fef483ee03234266284a3c3ed167474fe7db1c8ca54c6e7665781ad9e2a"
+        },
+        "calibration": {
+          "count": 466,
+          "sha256": "d41a8a2497ab22a3230d5aab9fc589e9a4039dc9cf50fb4f92ba77a638bf3415"
+        },
+        "acceptance": {
+          "count": 466,
+          "sha256": "c81a855067ee424428e0be08db743ecf1bc709e32d42722ba77c63f036d7e251"
+        }
+      },
+      "test": {
+        "count": 3079,
+        "sha256": "d0fe9982308145c9e39acc9223c266001eeb4cd3469469784a829539298f81f5"
+      },
+      "note": "Previously inspected BANKING77 test set; parameters are frozen before this evaluation."
+    }
+  },
+  "originalPolicy": {
+    "calibration": {
+      "method": "temperature",
+      "temperature": 0.8231224232694673,
+      "status": "fitted"
+    },
+    "threshold": 0.85,
+    "acceptance": {
+      "mode": "automatic",
+      "status": "ready",
+      "targetAccuracy": 0.95
+    }
+  },
+  "protocol": "Fit temperature on the original calibration split; select threshold on the original acceptance split with the existing corrected grid. Freeze policy before reading test inputs. Evaluate unchanged policy on batch-32 and single-input WebGPU inference.",
+  "policySha256": "4c28616022d076e5c6a17b8a02b4a42a9c5e71c804fecd6380561d4b41cce3c1",
+  "policy": {
+    "format": "jev-distill-browser-policy-experiment",
+    "version": 1,
+    "createdAt": "2026-09-21T00:52:07.577Z",
+    "provenance": {
+      "sourceModelId": "local-12db390845c77979bf83",
+      "sourceManifestSha256": "bf0328c6f002c2cc41ccb555b49b61cd68ce04408cce8fcb1812429afee68901",
+      "headSha256": "0566ac242589b3704a8327022e905b3b565f04fefb8f3fcdd80f907f42cbba71",
+      "encoder": {
+        "modelId": "Xenova/all-MiniLM-L6-v2",
+        "revision": "751bff37182d3f1213fa05d7196b954e230abad9",
+        "dtype": "fp16",
+        "sha256": "2cdb5e58291813b6d6e248ed69010100246821a367fa17b1b81ae9483744533d"
+      },
+      "tokenizerSha256": "da0e79933b9ed51798a3ae27893d3c5fa4a201126cef75586296df9b4d2c62a0",
+      "runtime": {
+        "@huggingface/transformers": "4.3.0",
+        "onnxruntime-web": "1.31.0-dev.20260914-8d85527a0"
+      },
+      "device": "webgpu",
+      "preprocessing": "canonical-json-v1",
+      "pooling": "mean",
+      "normalize": true,
+      "maxTokens": 256,
+      "calibrationBatchSize": 32,
+      "datasets": {
+        "uniqueExamples": 8023,
+        "duplicatesRemoved": 0,
+        "teacherModels": [],
+        "train": {
+          "count": 8023,
+          "sha256": "63400c4e26c75b6c5974366f050864ffbe03aef187137dcd8d24cb15bf37a73e"
+        },
+        "validation": {
+          "count": 1969,
+          "sha256": "fcee65c7e3bb532295c2b5d58ad64bb622c7796c505059f5555d62bcdc2544f5",
+          "source": "explicit"
+        },
+        "development": {
+          "tuning": {
+            "count": 1037,
+            "sha256": "d6ed2fef483ee03234266284a3c3ed167474fe7db1c8ca54c6e7665781ad9e2a"
+          },
+          "calibration": {
+            "count": 466,
+            "sha256": "d41a8a2497ab22a3230d5aab9fc589e9a4039dc9cf50fb4f92ba77a638bf3415"
+          },
+          "acceptance": {
+            "count": 466,
+            "sha256": "c81a855067ee424428e0be08db743ecf1bc709e32d42722ba77c63f036d7e251"
+          }
+        },
+        "test": {
+          "count": 3079,
+          "sha256": "d0fe9982308145c9e39acc9223c266001eeb4cd3469469784a829539298f81f5"
+        },
+        "note": "Previously inspected BANKING77 test set; parameters are frozen before this evaluation."
+      }
+    },
+    "browser": {
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36",
+      "crossOriginIsolated": true,
+      "runtime": {
+        "@huggingface/transformers": "4.3.0",
+        "onnxruntime-web": "1.31.0-dev.20260914-8d85527a0"
+      },
+      "adapter": {
+        "vendor": "apple",
+        "architecture": "metal-3",
+        "features": [
+          "bgra8unorm-storage",
+          "clip-distances",
+          "core-features-and-limits",
+          "depth-clip-control",
+          "depth32float-stencil8",
+          "dual-source-blending",
+          "float32-blendable",
+          "float32-filterable",
+          "indirect-first-instance",
+          "primitive-index",
+          "rg11b10ufloat-renderable",
+          "shader-f16",
+          "subgroup-size-control",
+          "subgroups",
+          "texture-component-swizzle",
+          "texture-compression-astc",
+          "texture-compression-astc-sliced-3d",
+          "texture-compression-bc",
+          "texture-compression-bc-sliced-3d",
+          "texture-compression-etc2",
+          "texture-formats-tier1",
+          "texture-formats-tier2",
+          "timestamp-query"
+        ]
+      }
+    },
+    "calibration": {
+      "method": "temperature",
+      "temperature": 0.8367521839161071,
+      "status": "fitted"
+    },
+    "threshold": 0.9,
+    "acceptance": {
+      "mode": "automatic",
+      "status": "ready",
+      "targetAccuracy": 0.95
+    }
+  },
+  "calibrationFit": {
+    "method": "temperature",
+    "temperature": 0.8367521839161071,
+    "status": "fitted",
+    "examples": 466,
+    "lossBefore": 0.29998370882603614,
+    "lossAfter": 0.28955199312025276
+  },
+  "acceptanceSelection": {
+    "acceptance": {
+      "mode": "automatic",
+      "status": "ready",
+      "targetAccuracy": 0.95
+    },
+    "threshold": 0.9,
+    "examples": 466,
+    "confidenceLevel": 0.95,
+    "method": "one-sided exact binomial; Bonferroni correction over a fixed threshold grid",
+    "candidates": [
+      {
+        "threshold": 0,
+        "accepted": 466,
+        "correct": 428,
+        "accuracy": 0.9184549356223176,
+        "coverage": 1,
+        "lowerBound": 0.8788622258145198
+      },
+      {
+        "threshold": 0.5,
+        "accepted": 448,
+        "correct": 421,
+        "accuracy": 0.9397321428571429,
+        "coverage": 0.9613733905579399,
+        "lowerBound": 0.9033782476962001
+      },
+      {
+        "threshold": 0.6,
+        "accepted": 427,
+        "correct": 408,
+        "accuracy": 0.955503512880562,
+        "coverage": 0.9163090128755365,
+        "lowerBound": 0.9218919587248029
+      },
+      {
+        "threshold": 0.7,
+        "accepted": 412,
+        "correct": 397,
+        "accuracy": 0.9635922330097088,
+        "coverage": 0.8841201716738197,
+        "lowerBound": 0.9315295860770938
+      },
+      {
+        "threshold": 0.8,
+        "accepted": 390,
+        "correct": 379,
+        "accuracy": 0.9717948717948718,
+        "coverage": 0.8369098712446352,
+        "lowerBound": 0.9413095282753369
+      },
+      {
+        "threshold": 0.85,
+        "accepted": 376,
+        "correct": 367,
+        "accuracy": 0.976063829787234,
+        "coverage": 0.8068669527896996,
+        "lowerBound": 0.9464464681072439
+      },
+      {
+        "threshold": 0.9,
+        "accepted": 360,
+        "correct": 357,
+        "accuracy": 0.9916666666666667,
+        "coverage": 0.7725321888412017,
+        "lowerBound": 0.9689053863881878
+      },
+      {
+        "threshold": 0.925,
+        "accepted": 347,
+        "correct": 344,
+        "accuracy": 0.9913544668587896,
+        "coverage": 0.7446351931330472,
+        "lowerBound": 0.9677544280675134
+      },
+      {
+        "threshold": 0.95,
+        "accepted": 324,
+        "correct": 322,
+        "accuracy": 0.9938271604938271,
+        "coverage": 0.6952789699570815,
+        "lowerBound": 0.9707226732725149
+      },
+      {
+        "threshold": 0.975,
+        "accepted": 280,
+        "correct": 278,
+        "accuracy": 0.9928571428571429,
+        "coverage": 0.6008583690987125,
+        "lowerBound": 0.9661842387945742
+      },
+      {
+        "threshold": 0.99,
+        "accepted": 213,
+        "correct": 213,
+        "accuracy": 1,
+        "coverage": 0.4570815450643777,
+        "lowerBound": 0.9742313415694078
+      },
+      {
+        "threshold": 0.995,
+        "accepted": 166,
+        "correct": 166,
+        "accuracy": 1,
+        "coverage": 0.3562231759656652,
+        "lowerBound": 0.9670567659337237
+      },
+      {
+        "threshold": 1,
+        "accepted": 0,
+        "correct": 0,
+        "accuracy": null,
+        "coverage": 0,
+        "lowerBound": 0
+      }
+    ]
+  },
+  "evaluation": {
+    "batch32": {
+      "oldQ8CalibrationOnFP16": {
+        "examples": 3079,
+        "accuracy": 0.9233517375771354,
+        "correct": 2843,
+        "logLoss": 0.27355391010267,
+        "brier": 0.1156827152914152,
+        "ece10": 0.008291031620491607,
+        "accepted": 2542,
+        "acceptedCorrect": 2483,
+        "coverage": 0.8255927249106852,
+        "acceptedAccuracy": 0.9767899291896145,
+        "acceptedAccuracyLower95": 0.9712521547389943,
+        "reliabilityBins": [
+          {
+            "from": 0,
+            "to": 0.1,
+            "count": 0,
+            "accuracy": null,
+            "confidence": null
+          },
+          {
+            "from": 0.1,
+            "to": 0.2,
+            "count": 3,
+            "accuracy": 0.3333333333333333,
+            "confidence": 0.17707814902255659
+          },
+          {
+            "from": 0.2,
+            "to": 0.3,
+            "count": 14,
+            "accuracy": 0.21428571428571427,
+            "confidence": 0.2550299198019119
+          },
+          {
+            "from": 0.3,
+            "to": 0.4,
+            "count": 36,
+            "accuracy": 0.3055555555555556,
+            "confidence": 0.3562050372734821
+          },
+          {
+            "from": 0.4,
+            "to": 0.5,
+            "count": 72,
+            "accuracy": 0.5555555555555556,
+            "confidence": 0.45797138205810267
+          },
+          {
+            "from": 0.5,
+            "to": 0.6,
+            "count": 95,
+            "accuracy": 0.5473684210526316,
+            "confidence": 0.5469110660604701
+          },
+          {
+            "from": 0.6,
+            "to": 0.7,
+            "count": 101,
+            "accuracy": 0.6732673267326733,
+            "confidence": 0.6465032255144686
+          },
+          {
+            "from": 0.7,
+            "to": 0.8,
+            "count": 137,
+            "accuracy": 0.8102189781021898,
+            "confidence": 0.7539285246556192
+          },
+          {
+            "from": 0.8,
+            "to": 0.9,
+            "count": 209,
+            "accuracy": 0.861244019138756,
+            "confidence": 0.8572860288826867
+          },
+          {
+            "from": 0.9,
+            "to": 1,
+            "count": 2412,
+            "accuracy": 0.9854892205638475,
+            "confidence": 0.9836841521299006
+          }
+        ]
+      },
+      "recalibratedFP16": {
+        "examples": 3079,
+        "accuracy": 0.9233517375771354,
+        "correct": 2843,
+        "logLoss": 0.27378987467715443,
+        "brier": 0.1158223195671658,
+        "ece10": 0.011114661328000095,
+        "accepted": 2394,
+        "acceptedCorrect": 2362,
+        "coverage": 0.7775251705099058,
+        "acceptedAccuracy": 0.9866332497911445,
+        "acceptedAccuracyLower95": 0.9820870079896622,
+        "reliabilityBins": [
+          {
+            "from": 0,
+            "to": 0.1,
+            "count": 0,
+            "accuracy": null,
+            "confidence": null
+          },
+          {
+            "from": 0.1,
+            "to": 0.2,
+            "count": 3,
+            "accuracy": 0.3333333333333333,
+            "confidence": 0.17463118794898647
+          },
+          {
+            "from": 0.2,
+            "to": 0.3,
+            "count": 14,
+            "accuracy": 0.21428571428571427,
+            "confidence": 0.2517969575937312
+          },
+          {
+            "from": 0.3,
+            "to": 0.4,
+            "count": 37,
+            "accuracy": 0.2972972972972973,
+            "confidence": 0.3531439250456709
+          },
+          {
+            "from": 0.4,
+            "to": 0.5,
+            "count": 77,
+            "accuracy": 0.5584415584415584,
+            "confidence": 0.45755288637698116
+          },
+          {
+            "from": 0.5,
+            "to": 0.6,
+            "count": 98,
+            "accuracy": 0.5408163265306123,
+            "confidence": 0.548779606882858
+          },
+          {
+            "from": 0.6,
+            "to": 0.7,
+            "count": 105,
+            "accuracy": 0.6857142857142857,
+            "confidence": 0.6511430314036835
+          },
+          {
+            "from": 0.7,
+            "to": 0.8,
+            "count": 134,
+            "accuracy": 0.8283582089552238,
+            "confidence": 0.7557768440073545
+          },
+          {
+            "from": 0.8,
+            "to": 0.9,
+            "count": 217,
+            "accuracy": 0.8617511520737328,
+            "confidence": 0.8579229577525352
+          },
+          {
+            "from": 0.9,
+            "to": 1,
+            "count": 2394,
+            "accuracy": 0.9866332497911445,
+            "confidence": 0.983116532513393
+          }
+        ]
+      },
+      "uncalibrated": {
+        "logLoss": 0.287197220293239,
+        "brier": 0.11960701532902052,
+        "ece10": 0.03846736892546747
+      },
+      "changedChoices": 0,
+      "changedAcceptance": 148,
+      "browserPolicyApplicationVerified": true,
+      "elapsedMs": 1517.1400000154972
+    },
+    "single": {
+      "oldQ8CalibrationOnFP16": {
+        "examples": 3079,
+        "accuracy": 0.9230269568041571,
+        "correct": 2842,
+        "logLoss": 0.273551079077651,
+        "brier": 0.115688883405503,
+        "ece10": 0.007296757156562115,
+        "accepted": 2542,
+        "acceptedCorrect": 2483,
+        "coverage": 0.8255927249106852,
+        "acceptedAccuracy": 0.9767899291896145,
+        "acceptedAccuracyLower95": 0.9712521547389943,
+        "reliabilityBins": [
+          {
+            "from": 0,
+            "to": 0.1,
+            "count": 0,
+            "accuracy": null,
+            "confidence": null
+          },
+          {
+            "from": 0.1,
+            "to": 0.2,
+            "count": 3,
+            "accuracy": 0.3333333333333333,
+            "confidence": 0.1764482380181056
+          },
+          {
+            "from": 0.2,
+            "to": 0.3,
+            "count": 13,
+            "accuracy": 0.23076923076923078,
+            "confidence": 0.25191003329589057
+          },
+          {
+            "from": 0.3,
+            "to": 0.4,
+            "count": 37,
+            "accuracy": 0.32432432432432434,
+            "confidence": 0.3543229153124862
+          },
+          {
+            "from": 0.4,
+            "to": 0.5,
+            "count": 70,
+            "accuracy": 0.5285714285714286,
+            "confidence": 0.45714006977943605
+          },
+          {
+            "from": 0.5,
+            "to": 0.6,
+            "count": 97,
+            "accuracy": 0.5463917525773195,
+            "confidence": 0.5463136737580353
+          },
+          {
+            "from": 0.6,
+            "to": 0.7,
+            "count": 102,
+            "accuracy": 0.6666666666666666,
+            "confidence": 0.6467378865197638
+          },
+          {
+            "from": 0.7,
+            "to": 0.8,
+            "count": 133,
+            "accuracy": 0.8120300751879699,
+            "confidence": 0.7535098581530363
+          },
+          {
+            "from": 0.8,
+            "to": 0.9,
+            "count": 212,
+            "accuracy": 0.8632075471698113,
+            "confidence": 0.8563727667893959
+          },
+          {
+            "from": 0.9,
+            "to": 1,
+            "count": 2412,
+            "accuracy": 0.9854892205638475,
+            "confidence": 0.9836904581021924
+          }
+        ]
+      },
+      "recalibratedFP16": {
+        "examples": 3079,
+        "accuracy": 0.9230269568041571,
+        "correct": 2842,
+        "logLoss": 0.2737865250874735,
+        "brier": 0.11582786212394597,
+        "ece10": 0.00972763986517071,
+        "accepted": 2396,
+        "acceptedCorrect": 2363,
+        "coverage": 0.7781747320558623,
+        "acceptedAccuracy": 0.9862270450751253,
+        "acceptedAccuracyLower95": 0.9816266831705212,
+        "reliabilityBins": [
+          {
+            "from": 0,
+            "to": 0.1,
+            "count": 0,
+            "accuracy": null,
+            "confidence": null
+          },
+          {
+            "from": 0.1,
+            "to": 0.2,
+            "count": 3,
+            "accuracy": 0.3333333333333333,
+            "confidence": 0.17401689643354892
+          },
+          {
+            "from": 0.2,
+            "to": 0.3,
+            "count": 15,
+            "accuracy": 0.26666666666666666,
+            "confidence": 0.2552939504125501
+          },
+          {
+            "from": 0.3,
+            "to": 0.4,
+            "count": 36,
+            "accuracy": 0.3055555555555556,
+            "confidence": 0.3543894440327993
+          },
+          {
+            "from": 0.4,
+            "to": 0.5,
+            "count": 76,
+            "accuracy": 0.5394736842105263,
+            "confidence": 0.4572901705445947
+          },
+          {
+            "from": 0.5,
+            "to": 0.6,
+            "count": 100,
+            "accuracy": 0.55,
+            "confidence": 0.5490961935059645
+          },
+          {
+            "from": 0.6,
+            "to": 0.7,
+            "count": 102,
+            "accuracy": 0.6764705882352942,
+            "confidence": 0.6505292087898787
+          },
+          {
+            "from": 0.7,
+            "to": 0.8,
+            "count": 135,
+            "accuracy": 0.8222222222222222,
+            "confidence": 0.7548229042687532
+          },
+          {
+            "from": 0.8,
+            "to": 0.9,
+            "count": 216,
+            "accuracy": 0.8657407407407407,
+            "confidence": 0.8571354155002875
+          },
+          {
+            "from": 0.9,
+            "to": 1,
+            "count": 2396,
+            "accuracy": 0.9862270450751253,
+            "confidence": 0.9830530732311913
+          }
+        ]
+      },
+      "uncalibrated": {
+        "logLoss": 0.2871883540701645,
+        "brier": 0.11960697781491532,
+        "ece10": 0.03812981016346641
+      },
+      "changedChoices": 0,
+      "changedAcceptance": 146,
+      "browserPolicyApplicationVerified": true,
+      "elapsedMs": 16486.335000008345
+    }
+  },
+  "complete": true,
+  "batchingStability": {
+    "examples": 3079,
+    "changedChoices": 3,
+    "changedAcceptance": 2,
+    "maxConfidenceDifference": 0.008671772606554606
+  }
+}

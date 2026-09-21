@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Email classifier</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <main aria-label="Email classifier">
+    <form id="email-form">
+      <div class="fields">
+        <input id="from" aria-label="From" placeholder="From" autocomplete="off" maxlength="5000">
+        <input id="subject" aria-label="Subject" placeholder="Subject" autocomplete="off" maxlength="5000">
+      </div>
+      <textarea id="body" aria-label="Email body" placeholder="Email" spellcheck="false" maxlength="100000"></textarea>
+      <div id="examples" role="group" aria-label="Example emails"></div>
+      <div class="actions">
+        <button id="compare" type="submit" value="both" disabled>Compare</button>
+        <button id="local" type="submit" value="local" disabled>Local only</button>
+        <button id="jev" type="submit" value="jev" disabled>Jev only</button>
+        <span id="status" role="status">Loading local model…</span>
+        <button id="reload" type="button" hidden>Reload local</button>
+      </div>
+    </form>
+    <p id="error" role="alert" hidden></p>
+    <div id="results" aria-live="polite" hidden>
+      <section id="local-panel" aria-label="Local result" hidden>
+        <header><h2>Local</h2><span id="local-time"></span></header>
+        <p id="local-status" role="status"></p>
+        <ol id="local-ranking" aria-label="Local probabilities"></ol>
+      </section>
+      <section id="jev-panel" aria-label="Jev result" hidden>
+        <header><h2>Jev</h2><span id="jev-time"></span></header>
+        <p id="jev-status" role="status"></p>
+        <ol id="jev-ranking" aria-label="Jev probabilities"></ol>
+      </section>
+    </div>
+    <details id="json-panel" hidden><summary>JSON</summary><pre id="json"></pre></details>
+  </main>
+  <script src="./file-help.js"></script>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

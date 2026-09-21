@@ -1,0 +1,54 @@
+{
+  "name": "jimothy",
+  "version": "0.1.0",
+  "description": "Train portable local classifiers from Jev-compatible datasets.",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "bin": {
+    "jimothy": "./dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./browser": {
+      "types": "./dist/browser.d.ts",
+      "import": "./dist/browser.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "examples",
+    "docs",
+    "benchmarks"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json && node scripts/build-browser.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "node --import tsx --test test/*.test.ts",
+    "test:semantic": "node --import tsx --test test/semantic.integration.ts",
+    "dev": "tsx src/cli.ts",
+    "demo:browser": "npm run build && node examples/browser/server.mjs",
+    "demo:email": "npm run build && node examples/email-browser/server.mjs",
+    "test:email-demo": "npm run build && node --test examples/email-browser/*.test.mjs",
+    "prepack": "npm run build"
+  },
+  "optionalDependencies": {
+    "@huggingface/transformers": "4.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.20.0",
+    "typescript": "~5.9.3",
+    "esbuild": "^0.28.2"
+  },
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}

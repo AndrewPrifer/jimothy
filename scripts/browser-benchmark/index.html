@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MiniLM browser benchmark</title>
+<style>
+body { font: 16px system-ui; max-width: 1100px; margin: 40px auto; padding: 0 24px; color: #19352b; background: #f6f8f5; }
+button, select { font: inherit; padding: 10px 16px; margin-right: 10px; } pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 13px; }
+table { border-collapse: collapse; width: 100%; margin: 24px 0; } th, td { text-align: left; padding: 10px; border-bottom: 1px solid #ccd7ce; }
+</style>
+<h1>MiniLM browser benchmark</h1>
+<p>The same trained head and test inputs, using local model files. Each variant gets a fresh worker. Keep this tab visible during timing.</p>
+<label for="suite">Experiment</label>
+<select id="suite"><option value="timing">Timing and full test accuracy</option><option value="latency">Repeat q8 WASM / FP16 WebGPU timing</option><option value="profile">GPU kernel verification (untimed)</option></select>
+<button id="run" disabled>Run benchmark</button>
+<p id="status" role="status">Preparing…</p>
+<table><thead><tr><th>Variant</th><th>Load</th><th>First prediction</th><th>Warm p50 / p95</th><th>Batch 32, inputs/s</th><th>Test accuracy</th></tr></thead><tbody id="results"></tbody></table>
+<pre id="details"></pre>
+<script type="module" src="/app.js"></script></html>

@@ -1,0 +1,13 @@
+{
+  "questions": {
+    "route": {
+      "type": "choice",
+      "instructions": "Which team should handle this support request? Choose the primary issue.",
+      "criteria": {
+        "billing": "Payments, charges, invoices, subscriptions, and refunds",
+        "shipping": "Delivery, parcels, tracking, and shipping addresses",
+        "technical": "Application errors, login failures, crashes, and broken features"
+      }
+    }
+  }
+}

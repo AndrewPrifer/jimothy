@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Local classifier</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <main aria-label="Local classifier">
+    <div class="toolbar">
+      <div class="modes" role="group" aria-label="Input mode">
+        <button id="single-mode" aria-pressed="true" type="button">Single</button>
+        <button id="batch-mode" aria-pressed="false" type="button">Batch</button>
+      </div>
+      <select id="engine" aria-label="Backend">
+        <option value="auto">Auto</option>
+        <option value="webgpu">WebGPU</option>
+        <option value="wasm">WASM</option>
+      </select>
+    </div>
+    <form id="classify-form">
+      <textarea id="message" aria-label="Message" placeholder="Message" spellcheck="false" maxlength="100000">I was charged twice for the same purchase.</textarea>
+      <div id="examples" role="group" aria-label="Example messages" hidden>
+        <button type="button" data-example="I was charged twice for the same purchase.">Duplicate charge</button>
+        <button type="button" data-example="I lost my card. How can I block it?">Lost card</button>
+        <button type="button" data-example="My bank transfer is still pending after three days.">Pending transfer</button>
+        <button type="button" data-example="Can you help me with my account?">Something vague</button>
+      </div>
+      <div class="actions">
+        <button type="submit" id="classify" disabled>Classify</button>
+        <span id="status" role="status">Loading…</span>
+        <button id="reload" type="button" hidden>Reload</button>
+      </div>
+    </form>
+    <p id="error" role="alert" hidden></p>
+    <section id="result-panel" aria-label="Results" aria-live="polite" aria-busy="false" hidden>
+      <div id="single-result" hidden>
+        <ol id="rankings" aria-label="Top predictions"></ol>
+      </div>
+      <div id="batch-result" hidden>
+        <table>
+          <thead><tr><th>Message / intent</th><th>Probability</th></tr></thead>
+          <tbody id="batch-rows"></tbody>
+        </table>
+      </div>
+      <div class="result-meta">
+        <details><summary>JSON</summary><pre id="json-output"></pre></details>
+        <span id="latency"></span>
+      </div>
+    </section>
+  </main>
+  <script src="./file-help.js"></script>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

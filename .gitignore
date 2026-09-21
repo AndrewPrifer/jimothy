@@ -1,0 +1,28 @@
+# Dependencies and build output
+node_modules/
+dist/
+*.tgz
+
+# Downloaded assets and generated training output
+.cache/
+/models/
+/datasets/
+*.teacher/
+
+# Python tooling
+__pycache__/
+*.py[cod]
+.venv/
+
+# Test output and logs
+coverage/
+*.log
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Operating system files
+.DS_Store

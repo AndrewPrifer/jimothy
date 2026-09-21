@@ -1,0 +1,9 @@
+{"id": "gold-0", "state": "There is a duplicate charge on my subscription invoice.", "label": "billing"}
+{"id": "gold-1", "state": "Refund the payment that you billed to my credit card.", "label": "billing"}
+{"id": "gold-2", "state": "Update my billing invoice and subscription payment details.", "label": "billing"}
+{"id": "gold-3", "state": "My delivery tracking shows the parcel at the wrong address.", "label": "shipping"}
+{"id": "gold-4", "state": "The shipment is late and my package has not arrived.", "label": "shipping"}
+{"id": "gold-5", "state": "Reschedule the shipping delivery to my new address.", "label": "shipping"}
+{"id": "gold-6", "state": "The application login crashes and shows a server error.", "label": "technical"}
+{"id": "gold-7", "state": "The dashboard freezes when I upload a file.", "label": "technical"}
+{"id": "gold-8", "state": "My app password reset button is broken.", "label": "technical"}

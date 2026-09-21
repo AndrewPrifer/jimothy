@@ -1,0 +1,266 @@
+{
+  "hardware": {
+    "cpu": "Apple M3 Max",
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v25.6.0"
+  },
+  "generator": {
+    "model": "openai/gpt-5-nano",
+    "count": 300,
+    "train": 240,
+    "test": 60,
+    "categories": {
+      "primary": 50,
+      "promotion": 50,
+      "update": 50,
+      "social": 50,
+      "forum": 50,
+      "purchase": 50
+    },
+    "usage": {
+      "inputTokens": 6539,
+      "outputTokens": 16138
+    },
+    "elapsedMs": 89066.719875,
+    "note": "Synthetic generation targets are not human reference labels. The 60 test inputs were selected before teacher labeling and model training."
+  },
+  "teacher": {
+    "model": "typesafe-ai/jev",
+    "resolvedModels": [
+      "typesafe-ai/jev"
+    ],
+    "count": 300,
+    "distribution": {
+      "forum": 55,
+      "primary": 79,
+      "promotion": 54,
+      "purchase": 63,
+      "social": 8,
+      "update": 41
+    },
+    "generatorTargetMatches": 224,
+    "note": "Generator targets describe intended categories, not human reference labels. Training-run counters exclude earlier attempts and test labeling.",
+    "trainingRun": {
+      "model": "typesafe-ai/jev",
+      "endpoint": "https://ai-gateway.vercel.sh/typesafe/v1/systemone",
+      "cache": "datasets/email-300/jev.teacher",
+      "identityHash": "77a57257168ab3f579d8f22c2bcac10f5dbcf80b7880d00995065215597b06af",
+      "inputs": 240,
+      "uniqueInputs": 240,
+      "cached": 35,
+      "labeled": 205,
+      "requests": 213,
+      "retries": 8,
+      "elapsedMs": 640203.4457500001,
+      "requestsPerMinute": 20,
+      "resolvedModels": [
+        "typesafe-ai/jev"
+      ]
+    },
+    "usage": {
+      "inputTokens": 199789,
+      "outputTokens": 17700
+    },
+    "gatewayCostUsd": 0,
+    "marketCostUsd": 0.008391138000000006
+  },
+  "local": {
+    "model": "local-d9a0395f0e7a6d077288",
+    "trainingMs": 3798.530000000028,
+    "bundleBytes": 23765108,
+    "loadMs": 59.956959,
+    "wordpieces": {
+      "min": 52,
+      "max": 96
+    },
+    "inference": {
+      "samples": 60,
+      "warmups": 10,
+      "p50Ms": 6.802708000000052,
+      "p95Ms": 8.327332999999953,
+      "batchMs": 540.5420419999999
+    },
+    "dataset": {
+      "uniqueExamples": 240,
+      "duplicatesRemoved": 0,
+      "teacherModels": [
+        "typesafe-ai/jev"
+      ],
+      "train": {
+        "count": 195,
+        "sha256": "530833b37af9283cd808f16375e1e1f527eb25a40f0ae94e1cb899881b5f266f"
+      },
+      "validation": {
+        "count": 45,
+        "sha256": "371abe95ba8ca62607a24711cdeb8688cc3701e33ab975e0f1a11f777393c536",
+        "source": "grouped-80/20"
+      },
+      "development": {
+        "tuning": {
+          "count": 25,
+          "sha256": "b35822c77e782a3d90c35d18791c10b263eae818a4978f79b5d295fb59c43b49"
+        },
+        "calibration": {
+          "count": 10,
+          "sha256": "048dfbd6cb09c5dfbcab3f6a3097fdf3fb7d833eacec1a53194cc5d012b7c0ff"
+        },
+        "acceptance": {
+          "count": 10,
+          "sha256": "b643eb63d6fe903c3b3a2197e6bcb1f19d05d9811583ad602d93e874b532dea4"
+        }
+      },
+      "test": {
+        "count": 60,
+        "sha256": "ab9029302779f484c839c2739351584bdccb8ee8e7cb7b3e318802f68dd1cb75"
+      }
+    },
+    "summary": {
+      "reference": "teacher labels",
+      "examples": 60,
+      "accuracy": 0.75,
+      "coverage": 0,
+      "acceptedAccuracy": null,
+      "evaluation": "test",
+      "acceptance": "insufficient_data",
+      "targetAccuracy": 0.95
+    },
+    "single": {
+      "reference": "teacher labels",
+      "examples": 60,
+      "accuracy": 0.7833333333333333,
+      "coverage": 0,
+      "acceptedAccuracy": null,
+      "macroF1": 0.648954148954149,
+      "perClass": [
+        {
+          "label": "forum",
+          "support": 11,
+          "precision": 0.7272727272727273,
+          "recall": 0.7272727272727273,
+          "f1": 0.7272727272727273
+        },
+        {
+          "label": "primary",
+          "support": 19,
+          "precision": 0.8888888888888888,
+          "recall": 0.8421052631578947,
+          "f1": 0.8648648648648649
+        },
+        {
+          "label": "promotion",
+          "support": 10,
+          "precision": 0.875,
+          "recall": 0.7,
+          "f1": 0.7777777777777777
+        },
+        {
+          "label": "purchase",
+          "support": 11,
+          "precision": 1,
+          "recall": 0.9090909090909091,
+          "f1": 0.9523809523809523
+        },
+        {
+          "label": "social",
+          "support": 0,
+          "precision": 0,
+          "recall": 0,
+          "f1": 0
+        },
+        {
+          "label": "update",
+          "support": 9,
+          "precision": 0.5,
+          "recall": 0.6666666666666666,
+          "f1": 0.5714285714285715
+        }
+      ]
+    },
+    "batch": {
+      "reference": "teacher labels",
+      "examples": 60,
+      "accuracy": 0.75,
+      "coverage": 0,
+      "acceptedAccuracy": null,
+      "macroF1": 0.616015366015366,
+      "perClass": [
+        {
+          "label": "forum",
+          "support": 11,
+          "precision": 0.8888888888888888,
+          "recall": 0.7272727272727273,
+          "f1": 0.7999999999999999
+        },
+        {
+          "label": "primary",
+          "support": 19,
+          "precision": 0.8333333333333334,
+          "recall": 0.7894736842105263,
+          "f1": 0.8108108108108109
+        },
+        {
+          "label": "promotion",
+          "support": 10,
+          "precision": 0.7,
+          "recall": 0.7,
+          "f1": 0.7
+        },
+        {
+          "label": "purchase",
+          "support": 11,
+          "precision": 0.9090909090909091,
+          "recall": 0.9090909090909091,
+          "f1": 0.9090909090909091
+        },
+        {
+          "label": "social",
+          "support": 0,
+          "precision": 0,
+          "recall": 0,
+          "f1": 0
+        },
+        {
+          "label": "update",
+          "support": 9,
+          "precision": 0.4166666666666667,
+          "recall": 0.5555555555555556,
+          "f1": 0.4761904761904762
+        }
+      ]
+    },
+    "batchVsSingle": {
+      "changedLabels": 5,
+      "changedIds": [
+        "email-005",
+        "email-110",
+        "email-190",
+        "email-235",
+        "email-255"
+      ],
+      "maxProbabilityDifference": 0.27767811132929665
+    },
+    "calibration": {
+      "method": "temperature",
+      "temperature": 1,
+      "status": "insufficient_data",
+      "examples": 10,
+      "lossBefore": null,
+      "lossAfter": null,
+      "reference": "winning provided label",
+      "note": "Fitting loss, not independent calibration performance."
+    },
+    "warnings": [
+      "Test data does not cover every label; performance for absent labels is not established.",
+      "Not enough independent held-out examples to calibrate and select acceptance. Add more examples; this model abstains by default."
+    ]
+  },
+  "run": null,
+  "timingNote": "CPU q8 inference; model load in a warm process; 60 sequential single-input predictions after 10 warmups. Training-run labeling time covers that resumed run only, excluding earlier attempts and test labeling. A null run means the model was measured after training in a separate invocation.",
+  "verification": {
+    "offlineReplayRequests": 0,
+    "offlineReplayCached": 240,
+    "identicalHead": true,
+    "identicalFeatures": true
+  }
+}
