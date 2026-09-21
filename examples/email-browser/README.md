@@ -31,3 +31,26 @@ This local example is separate from the banking playground on port 4319. It is n
 Run the proxy and preprocessing checks with `npm run test:email-demo`.
 
 Local inference uses the public [`jimothy/browser` SDK](../../docs/browser-sdk.md). The example server serves its worker and runtime assets; it holds credentials only for the optional Jev comparison.
+
+
+## Deploy on Vercel
+
+Import this repository into Vercel with the repository root as the Root Directory.
+The checked-in `vercel.json` sets the build command and installation options.
+Add `AI_GATEWAY_API_KEY` in Vercel's environment variables to enable the shared
+Jev demo before its cutoff, then deploy. Without it, visitors can supply their own key.
+Custom domains work without code changes.
+
+`npm run build:landing` generates Vercel Build Output in `.vercel/output`:
+static HTML, SDK/runtime files and the model, plus Node.js functions for
+`/api/jev` and `/config.json`. Credentials are read only at function runtime.
+The shared-key cutoff remains September 26, 2026 at 08:00 UTC.
+
+The deployable model is checked in under `examples/email-browser/model/` so
+Git deployments need no training or downloads. To update it, replace that directory
+with the complete trained bundle; the build verifies every manifest checksum.
+This bundle is excluded from the npm package.
+
+Run `npm run test:landing` to build and check the deployment with mocked Jev responses.
+The proxy's concurrency lock and retry cooldown apply per function instance,
+not globally across Vercel instances.

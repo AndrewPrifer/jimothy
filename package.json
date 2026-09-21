@@ -24,7 +24,8 @@
     "README.md",
     "examples",
     "docs",
-    "benchmarks"
+    "benchmarks",
+    "!examples/email-browser/model"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json && node scripts/build-browser.mjs",
@@ -35,7 +36,9 @@
     "demo:browser": "npm run build && node examples/browser/server.mjs",
     "demo:email": "npm run build && node examples/email-browser/server.mjs",
     "test:email-demo": "npm run build && node --test examples/email-browser/*.test.mjs",
-    "prepack": "npm run build"
+    "prepack": "npm run build",
+    "build:landing": "npm run build && node scripts/build-landing.mjs",
+    "test:landing": "npm run build:landing && node --test scripts/landing.test.mjs"
   },
   "optionalDependencies": {
     "@huggingface/transformers": "4.3.0"

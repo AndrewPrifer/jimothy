@@ -26,3 +26,6 @@ coverage/
 
 # Operating system files
 .DS_Store
+
+# Vercel local configuration and deployment output
+.vercel/
