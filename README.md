@@ -1,6 +1,6 @@
-# Jimothy: train zero-config local models with a Jev-compatible API
+# Jimothy: Turn your Jev-usage into small, task-specific classifiers.
 
-Train small, insanely fast local classifiers from Jev-compatible examples that can run in the browser. One npm package includes the training CLI, Node.js SDK, and browser SDK.
+Train small, insanely fast local classifiers from Jev-compatible examples. Run locally in your browser or Node.js.
 
 <p align="center">
   <img height="280" alt="addtext_com_MjMxNDI0Ond3dzEwOjQ0MDk5" src="https://github.com/user-attachments/assets/b0781bef-61ab-47e5-96c6-2c034ad5cae3" />
