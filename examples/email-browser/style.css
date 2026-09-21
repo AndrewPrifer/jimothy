@@ -92,7 +92,7 @@ h3 { font-size: 14px; font-weight: 550; margin: 0; }
 .use-cases { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 27px; list-style: none; padding: 34px 0; margin: 62px 0 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 .use-cases h3 { font-size: 13px; margin-bottom: 9px; }
 .use-cases p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.75; }
-.site-footer { display: flex; justify-content: flex-end; padding: 25px 0 36px; color: var(--muted); font-size: 11px; }
+.site-footer { display: flex; justify-content: space-between; gap: 16px; padding: 25px 0 36px; color: var(--muted); font-size: 11px; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 @media (max-width: 540px) {
   .page { width: calc(100% - 32px); }
