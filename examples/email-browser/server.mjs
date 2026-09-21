@@ -14,6 +14,8 @@ import { emailState } from './email.js';
 const here = dirname(fileURLToPath(import.meta.url));
 const root = resolve(here, '../..');
 const mime = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript', '.mjs': 'text/javascript', '.json': 'application/json', '.wasm': 'application/wasm' };
+// End of September 25, 2026 in fixed PST (UTC−08:00).
+export const SHARED_KEY_EXPIRES_AT = Date.parse('2026-09-26T08:00:00Z');
 const MAX_BODY_BYTES = 400_000;
 const send = (res, status, body) => {
   res.writeHead(status, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
@@ -21,7 +23,7 @@ const send = (res, status, body) => {
 };
 
 /** Only this handler holds the key. No email or provider response is written to disk or logs. */
-export function createHandler({ manifest, config, files, apiKey, teacher, endpoint, port, fetchImpl = fetch }) {
+export function createHandler({ manifest, config, files, apiKey, teacher, endpoint, port, fetchImpl = fetch, now = Date.now }) {
   let pending = false, retryAt = 0;
   return async (req, res) => {
     res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
@@ -39,10 +41,16 @@ export function createHandler({ manifest, config, files, apiKey, teacher, endpoi
         send(res, 403, { error: 'Use the email playground on this server.' }); return;
       }
       if (req.headers['content-type']?.split(';')[0].trim() !== 'application/json') { send(res, 415, { error: 'Send JSON.' }); return; }
-      if (!apiKey) { send(res, 503, { error: 'Set AI_GATEWAY_API_KEY on the server to use Jev.' }); return; }
+      const visitorKey = req.headers['x-jev-api-key'];
+      if (visitorKey !== undefined && (typeof visitorKey !== 'string' || !/^[\x21-\x7e]{1,4096}$/.test(visitorKey))) {
+        send(res, 400, { error: 'Enter a valid API key.' }); return;
+      }
+      const keyForRequest = () => visitorKey ?? (now() < SHARED_KEY_EXPIRES_AT ? apiKey : undefined);
+      const requireKey = () => send(res, 401, { code: 'api_key_required', error: 'Enter your Vercel API key to use Jev.' });
+      if (!keyForRequest()) { requireKey(); return; }
       if (pending) { send(res, 429, { error: 'A Jev request is already running. Try again shortly.' }); return; }
-      if (Date.now() < retryAt) {
-        const seconds = Math.ceil((retryAt - Date.now()) / 1000);
+      if (now() < retryAt) {
+        const seconds = Math.ceil((retryAt - now()) / 1000);
         res.setHeader('Retry-After', String(seconds));
         send(res, 429, { error: `Jev is rate limited. Try again in ${seconds}s.` }); return;
       }
@@ -59,26 +67,28 @@ export function createHandler({ manifest, config, files, apiKey, teacher, endpoi
       } catch { send(res, 400, { error: 'Provide from, subject, and a non-empty body as text.' }); return; }
       // Recheck after the asynchronous body read so parallel submissions cannot race the lock.
       if (pending) { send(res, 429, { error: 'A Jev request is already running. Try again shortly.' }); return; }
+      const requestKey = keyForRequest();
+      if (!requestKey) { requireKey(); return; }
       pending = true;
       const abort = new AbortController();
       res.on('close', () => { if (!res.writableEnded) abort.abort(); });
       try {
         const response = await fetchImpl(endpoint, {
           method: 'POST', redirect: 'error', signal: AbortSignal.any([abort.signal, AbortSignal.timeout(30_000)]),
-          headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+          headers: { Authorization: `Bearer ${requestKey}`, 'Content-Type': 'application/json' },
           body: JSON.stringify({ model: teacher, state, questions: { [manifest.task.questionId]: manifest.task.question } }),
         });
         if (!response.ok) {
           await response.body?.cancel();
           if (response.status === 429) {
             const after = response.headers.get('retry-after');
-            const seconds = after && Number.isFinite(Number(after)) ? Number(after) : (Date.parse(after ?? '') - Date.now()) / 1000;
+            const seconds = after && Number.isFinite(Number(after)) ? Number(after) : (Date.parse(after ?? '') - now()) / 1000;
             const wait = Math.max(1, Math.ceil(Number.isFinite(seconds) ? seconds : 30));
-            retryAt = Date.now() + wait * 1000;
+            retryAt = now() + wait * 1000;
             res.setHeader('Retry-After', String(wait));
             send(res, 429, { error: `Jev is rate limited. Try again in ${wait}s.` });
           } else send(res, 502, { error: [401, 403].includes(response.status)
-            ? 'Jev rejected the server API key. Check AI_GATEWAY_API_KEY.' : `Jev returned HTTP ${response.status}. Try again.` });
+            ? 'Jev rejected the API key.' : `Jev returned HTTP ${response.status}. Try again.` });
           return;
         }
         let probabilities, choice;
@@ -100,7 +110,10 @@ export function createHandler({ manifest, config, files, apiKey, teacher, endpoi
     if (!['GET', 'HEAD'].includes(req.method)) { send(res, 405, { error: 'Method not allowed.' }); return; }
     if (pathname === '/config.json') {
       res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
-      res.end(req.method === 'HEAD' ? undefined : JSON.stringify(config)); return;
+      res.end(req.method === 'HEAD' ? undefined : JSON.stringify({ ...config,
+        teacherReady: Boolean(apiKey) && now() < SHARED_KEY_EXPIRES_AT,
+        sharedKeyExpiresAt: SHARED_KEY_EXPIRES_AT, serverTime: now(),
+      })); return;
     }
     const file = files.get(pathname);
     if (!file) { send(res, 404, { error: 'Not found.' }); return; }
@@ -135,7 +148,7 @@ export async function start() {
     policies: { wasm: { calibration: manifest.calibration, thresholdRecommendation: manifest.thresholdRecommendation }, webgpu: null } };
   const files = new Map([
     ['/', join(here, 'index.html')], ['/style.css', join(here, 'style.css')], ['/app.js', join(here, 'app.js')], ['/email.js', join(here, 'email.js')],
-    ['/file-help.js', join(here, 'file-help.js')],
+    ['/file-help.js', join(here, 'file-help.js')], ['/landing.js', join(here, 'landing.js')],
     ['/jimothy/browser.js', join(root, 'dist/browser.js')], [`${base}model.json`, join(modelPath, 'model.json')],
   ]);
   for (const file of Object.keys(manifest.files)) files.set(`${base}${file}`, join(modelPath, file));

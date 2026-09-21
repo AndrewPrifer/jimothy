@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createServer, request } from 'node:http';
 import { readFile } from 'node:fs/promises';
-import { createHandler } from './server.mjs';
+import { createHandler, SHARED_KEY_EXPIRES_AT } from './server.mjs';
 import { emailState, examples } from './email.js';
 import { parseTask, stateText } from '../../dist/schema.js';
 
@@ -10,10 +10,10 @@ const task = parseTask(JSON.parse(await readFile(new URL('../email/task.json', i
 const state = { from: 'shop@example.com', subject: 'Receipt', body: 'Your payment for order 12 was received.' };
 const probabilities = Object.fromEntries(task.labels.map(label => [label, label === 'purchase' ? 0.95 : 0.01]));
 
-async function fixture(run, fetchImpl, apiKey = 'private-test-key') {
+async function fixture(run, fetchImpl, apiKey = 'private-test-key', now = () => SHARED_KEY_EXPIRES_AT - 1) {
   let port;
   const server = createServer(createHandler({ manifest: { task }, config: { base: '/assets/test/', teacherReady: Boolean(apiKey) }, files: new Map(),
-    apiKey, teacher: 'typesafe-ai/jev', endpoint: 'https://ai-gateway.vercel.sh/typesafe/v1/systemone', port: () => port, fetchImpl }));
+    apiKey, teacher: 'typesafe-ai/jev', endpoint: 'https://ai-gateway.vercel.sh/typesafe/v1/systemone', port: () => port, fetchImpl, now }));
   await new Promise((resolve, reject) => { server.once('error', reject); server.listen(0, '127.0.0.1', resolve); });
   port = server.address().port;
   const url = `http://127.0.0.1:${port}`;
@@ -81,7 +81,7 @@ test('rejects foreign origins, invalid inputs, unsupported methods, and non-whit
 
 test('missing credentials leaves the local site usable and does not call Jev', async () => {
   await fixture(async ({ post, url }) => {
-    assert.equal((await post()).status, 503);
+    assert.equal((await post()).status, 401);
     const config = await (await fetch(`${url}/config.json`)).json();
     assert.equal(config.teacherReady, false);
   }, async () => { throw new Error('Unexpected provider call'); }, '');
@@ -115,4 +115,55 @@ test('blocks overlapping paid requests and rejects malformed distributions', asy
     started(); await waiting;
     return Response.json({ answers: { category: { type: 'choice', probabilities: { purchase: 1 } } } });
   });
+});
+
+
+test('shared credential expires at the PST boundary without restarting; visitor credentials still work', async () => {
+  let time = SHARED_KEY_EXPIRES_AT - 1;
+  const keys = [];
+  await fixture(async ({ post, url }) => {
+    const config = () => fetch(url + '/config.json').then(response => response.json());
+    assert.equal((await config()).teacherReady, true);
+    assert.equal((await post()).status, 200);
+    for (time of [SHARED_KEY_EXPIRES_AT, SHARED_KEY_EXPIRES_AT + 86_400_000]) {
+      const settings = await config();
+      assert.equal(settings.teacherReady, false);
+      assert.equal(settings.sharedKeyExpiresAt, Date.parse('2026-09-26T08:00:00Z'));
+      const response = await post();
+      assert.equal(response.status, 401);
+      assert.equal((await response.json()).code, 'api_key_required');
+    }
+    assert.equal((await post(state, { 'X-Jev-Api-Key': '' })).status, 400);
+    const response = await post(state, { 'X-Jev-Api-Key': 'visitor-test-key' });
+    assert.equal(response.status, 200);
+    assert.ok(!(await response.text()).includes('visitor-test-key'));
+    assert.deepEqual(keys, ['Bearer private-test-key', 'Bearer visitor-test-key']);
+  }, async (_url, init) => {
+    keys.push(init.headers.Authorization);
+    assert.deepEqual(JSON.parse(init.body).state, emailState(state));
+    return Response.json({ answers: { category: { type: 'choice', choice: 'purchase', probabilities } } });
+  }, 'private-test-key', () => time);
+});
+
+test('cutoff is rechecked after reading a request body', async () => {
+  let reads = 0, calls = 0;
+  await fixture(async ({ post }) => {
+    assert.equal((await post()).status, 401);
+    assert.equal(calls, 0);
+  }, async () => { calls++; throw new Error('Unexpected provider call'); },
+  'private-test-key', () => ++reads === 1 ? SHARED_KEY_EXPIRES_AT - 1 : SHARED_KEY_EXPIRES_AT);
+});
+
+test('visitor key works without a shared key and a rejected visitor key never falls back', async () => {
+  let calls = 0;
+  await fixture(async ({ post }) => {
+    const response = await post(state, { 'X-Jev-Api-Key': 'visitor-test-key' });
+    assert.equal(response.status, 502);
+    assert.ok(!(await response.text()).includes('visitor-test-key'));
+    assert.equal(calls, 1);
+  }, async (_url, init) => {
+    calls++;
+    assert.equal(init.headers.Authorization, 'Bearer visitor-test-key');
+    return new Response('visitor-test-key', { status: 401 });
+  }, '');
 });

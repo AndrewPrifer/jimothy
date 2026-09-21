@@ -4,19 +4,42 @@ import { emailState, examples } from '/email.js';
 const $ = id => document.getElementById(id);
 let config, classifier, loading, loaded = false, busy = false, revision = 0, controller;
 let responses = {};
+let expiryTimer;
+const teacherReady = () => Boolean(config?.teacherReady || $('api-key').value.trim());
+function expireSharedKey() {
+  config.teacherReady = false;
+  $('api-key-field').hidden = false;
+  buttons();
+}
+function scheduleExpiry() {
+  $('api-key-field').hidden = config.teacherReady;
+  if (!config.teacherReady) return;
+  const remaining = config.sharedKeyExpiresAt - config.serverTime;
+  const deadline = performance.now() + remaining;
+  const tick = () => {
+    const delay = deadline - performance.now();
+    if (delay <= 0) expireSharedKey();
+    else expiryTimer = setTimeout(tick, Math.min(delay, 2_147_483_647));
+  };
+  tick();
+}
 const pretty = label => label.charAt(0).toUpperCase() + label.slice(1);
 
 function buttons() {
   const hasBody = Boolean($('body').value.trim());
   $('local').disabled = busy || !loaded || !hasBody;
-  $('jev').disabled = busy || !config?.teacherReady || !hasBody;
-  $('compare').disabled = busy || !loaded || !config?.teacherReady || !hasBody;
+  $('jev').disabled = busy || !teacherReady() || !hasBody;
+  $('compare').disabled = busy || !loaded || !teacherReady() || !hasBody;
 }
 function clear() {
   revision++;
   controller?.abort();
   $('results').hidden = true; $('json-panel').hidden = true; $('error').hidden = true;
   responses = {};
+  for (const button of $('examples').children) {
+    const sample = examples.find(example => example.name === button.textContent);
+    button.setAttribute('aria-pressed', String(['from', 'subject', 'body'].every(key => $(key).value === sample[key])));
+  }
   buttons();
 }
 function error(message) { $('error').textContent = message; $('error').hidden = false; }
@@ -39,6 +62,7 @@ function render(name, response, ms) {
   for (const [label, probability] of ranked) {
     const row = document.createElement('li'), text = document.createElement('span'), score = document.createElement('span');
     row.classList.toggle('winner', label === answer.choice);
+    row.style.setProperty('--probability', `${Math.max(0, Math.min(100, probability * 100))}%`);
     text.textContent = pretty(label); score.textContent = `${(probability * 100).toFixed(1)}%`;
     row.append(text, score); $(`${name}-ranking`).append(row);
   }
@@ -56,13 +80,13 @@ async function load() {
   loading?.abort(); classifier?.dispose(); classifier = undefined;
   const abort = new AbortController(); loading = abort;
   loaded = false; clear(); $('reload').hidden = true;
-  $('status').textContent = 'Loading local model…';
+  $('status').textContent = 'Loading model…';
   try {
     const model = await loadClassifier(config.base, { assetsUrl: config.assetsUrl, signal: abort.signal,
-      onProgress: () => { $('status').textContent = 'Loading local model…'; } });
+      onProgress: () => { $('status').textContent = 'Loading model…'; } });
     if (loading !== abort) { await model.dispose(); return; }
     classifier = model; loaded = true;
-    $('status').textContent = config.teacherReady ? '' : 'Set AI_GATEWAY_API_KEY on the server for Jev.';
+    $('status').textContent = '';
   } catch (cause) {
     if (loading !== abort) return;
     $('status').textContent = 'Local model unavailable'; $('reload').hidden = false;
@@ -72,7 +96,7 @@ async function load() {
 }
 
 async function classify(mode) {
-  if (busy || !config || (mode !== 'jev' && !loaded) || (mode !== 'local' && !config.teacherReady)) return;
+  if (busy || !config || (mode !== 'jev' && !loaded) || (mode !== 'local' && !teacherReady())) return;
   clear();
   let state;
   try { state = emailState({ from: $('from').value, subject: $('subject').value, body: $('body').value }); }
@@ -98,9 +122,10 @@ async function classify(mode) {
     jobs.push((async () => {
       const started = performance.now();
       try {
-        const response = await fetch('/api/jev', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+        const response = await fetch('/api/jev', { method: 'POST', headers: { 'Content-Type': 'application/json', ...($('api-key').value.trim() ? { 'X-Jev-Api-Key': $('api-key').value.trim() } : {}) },
           body: JSON.stringify(state), signal: controller.signal });
         const result = await response.json();
+        if (result.code === 'api_key_required') expireSharedKey();
         if (!response.ok) throw new Error(result.error ?? 'Jev is unavailable. Try again.');
         if (revision === version) render('jev', result, performance.now() - started);
       } catch (cause) { if (revision === version) failed('jev', cause.name === 'AbortError' ? 'Request cancelled.' : cause.message); }
@@ -122,12 +147,13 @@ $('body').onkeydown = event => {
   }
 };
 $('reload').onclick = load;
-window.addEventListener('pagehide', () => { controller?.abort(); loading?.abort(); classifier?.dispose(); });
+$('api-key').addEventListener('input', clear);
+window.addEventListener('pagehide', () => { clearTimeout(expiryTimer); $('api-key').value = ''; controller?.abort(); loading?.abort(); classifier?.dispose(); });
 fill(examples.at(-1));
 if (location.protocol !== 'file:') {
   try {
     const response = await fetch('/config.json');
     if (!response.ok) throw new Error('Could not load the email model configuration.');
-    config = await response.json(); load();
+    config = await response.json(); scheduleExpiry(); load();
   } catch (cause) { $('status').textContent = ''; error(cause.message); }
 }

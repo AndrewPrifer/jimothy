@@ -3,42 +3,139 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Email classifier</title>
+  <meta name="description" content="Turn Jev-compatible examples into small, fast classifiers that run in your browser or Node.js. Train once with Jimothy, then run locally.">
+  <meta name="theme-color" content="#f7f8f3">
+  <title>Jimothy — small models, right where you need them</title>
   <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-  <main aria-label="Email classifier">
-    <form id="email-form">
-      <div class="fields">
-        <input id="from" aria-label="From" placeholder="From" autocomplete="off" maxlength="5000">
-        <input id="subject" aria-label="Subject" placeholder="Subject" autocomplete="off" maxlength="5000">
-      </div>
-      <textarea id="body" aria-label="Email body" placeholder="Email" spellcheck="false" maxlength="100000"></textarea>
-      <div id="examples" role="group" aria-label="Example emails"></div>
-      <div class="actions">
-        <button id="compare" type="submit" value="both" disabled>Compare</button>
-        <button id="local" type="submit" value="local" disabled>Local only</button>
-        <button id="jev" type="submit" value="jev" disabled>Jev only</button>
-        <span id="status" role="status">Loading local model…</span>
-        <button id="reload" type="button" hidden>Reload local</button>
-      </div>
-    </form>
-    <p id="error" role="alert" hidden></p>
-    <div id="results" aria-live="polite" hidden>
-      <section id="local-panel" aria-label="Local result" hidden>
-        <header><h2>Local</h2><span id="local-time"></span></header>
-        <p id="local-status" role="status"></p>
-        <ol id="local-ranking" aria-label="Local probabilities"></ol>
+  <div class="page">
+    <header class="site-header">
+      <a class="wordmark" href="#" aria-label="Jimothy home"><span class="brand-mark" aria-hidden="true">j.</span>jimothy</a>
+      <nav aria-label="Main navigation">
+        <a href="https://github.com/AndrewPrifer/jimothy#quick-start">Docs</a>
+        <a href="https://github.com/AndrewPrifer/jimothy">GitHub <span aria-hidden="true">↗</span></a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="intro" aria-labelledby="headline">
+        <h1 id="headline">Start with Jev.<br>Then make it <em>local.</em></h1>
+        <p>Turn your Jev-usage into small, task-specific classifiers. Train with one command. Run locally in your browser or Node.js.</p>
+        <button class="install" type="button" data-copy="npm install jimothy" aria-label="Copy npm install jimothy">
+          <span class="prompt" aria-hidden="true">$</span><code>npm install jimothy</code>
+          <svg class="copy-icon" width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M12 4V3H3v9h1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="copy-feedback" aria-hidden="true">Copied</span>
+        </button>
+        <span class="sr-only" id="copy-status" role="status"></span>
       </section>
-      <section id="jev-panel" aria-label="Jev result" hidden>
-        <header><h2>Jev</h2><span id="jev-time"></span></header>
-        <p id="jev-status" role="status"></p>
-        <ol id="jev-ranking" aria-label="Jev probabilities"></ol>
+
+      <section class="demo" aria-label="Email classification demo">
+        <div id="examples" role="group" aria-label="Example emails"></div>
+        <div class="demo-card">
+          <form id="email-form">
+            <div class="fields">
+              <label class="field" for="from"><span>From</span><input id="from" placeholder="sender@example.com" autocomplete="off" maxlength="5000"></label>
+              <label class="field" for="subject"><span>Subject</span><input id="subject" placeholder="Subject" autocomplete="off" maxlength="5000"></label>
+            </div>
+            <textarea id="body" aria-label="Email body" placeholder="Write an email…" spellcheck="false" maxlength="100000"></textarea>
+            <label id="api-key-field" class="api-key-field" hidden>
+              <span>Your Vercel API key</span>
+              <input id="api-key" type="password" autocomplete="off" maxlength="4096" spellcheck="false">
+            </label>
+            <div class="actions">
+              <button id="compare" class="primary" type="submit" value="both" disabled>Compare <span aria-hidden="true">↗</span></button>
+              <button id="local" type="submit" value="local" disabled>Local only</button>
+              <button id="jev" type="submit" value="jev" disabled>Jev only</button>
+              <button id="reload" type="button" hidden>Retry</button>
+              <span id="status" role="status">Loading model…</span>
+            </div>
+          </form>
+          <p id="error" role="alert" hidden></p>
+          <div id="results" aria-live="polite" hidden>
+            <section id="local-panel" aria-label="Local result" hidden>
+              <header class="result-header"><h3><span class="local-dot" aria-hidden="true"></span>Jimothy</h3><span id="local-time"></span></header>
+              <p id="local-status" role="status"></p>
+              <ol id="local-ranking" aria-label="Local probabilities"></ol>
+            </section>
+            <section id="jev-panel" aria-label="Jev result" hidden>
+              <header class="result-header"><h3>Jev</h3><span id="jev-time"></span></header>
+              <p id="jev-status" role="status"></p>
+              <ol id="jev-ranking" aria-label="Jev probabilities"></ol>
+            </section>
+          </div>
+          <details id="json-panel" hidden><summary>View JSON <span aria-hidden="true">↗</span></summary><pre id="json"></pre></details>
+        </div>
       </section>
-    </div>
-    <details id="json-panel" hidden><summary>JSON</summary><pre id="json"></pre></details>
-  </main>
+
+      <section class="code-section" aria-labelledby="code-title">
+        <div class="section-intro">
+          <h2 id="code-title">A few lines, then it’s yours.</h2>
+          <p>Bring saved answers, or have Jev label your inputs.</p>
+        </div>
+        <div class="code-card">
+          <div class="code-header">
+            <h3>Train</h3>
+            <div class="code-tabs" role="tablist" aria-label="Training examples">
+              <button type="button" role="tab" id="saved-tab" aria-selected="true" aria-controls="saved-code" data-code-group="train">Saved answers</button>
+              <button type="button" role="tab" id="teacher-tab" aria-selected="false" aria-controls="teacher-code" tabindex="-1" data-code-group="train">With Jev</button>
+            </div>
+          </div>
+          <pre id="saved-code" role="tabpanel" aria-labelledby="saved-tab" tabindex="0"><code><span class="code-command">npx jimothy train</span> \
+  --task task.json \
+  --data emails.jsonl \
+  --out models/email</code></pre>
+          <pre id="teacher-code" role="tabpanel" aria-labelledby="teacher-tab" tabindex="0" hidden><code><span class="code-comment"># Set AI_GATEWAY_API_KEY in your shell</span>
+<span class="code-command">npx jimothy train</span> \
+  --task task.json --inputs emails.jsonl \
+  --teacher <span class="code-string">typesafe-ai/jev</span> \
+  --out models/email</code></pre>
+        </div>
+        <div class="code-card">
+          <div class="code-header">
+            <h3>Run</h3>
+            <div class="code-tabs" role="tablist" aria-label="SDK examples">
+              <button type="button" role="tab" id="browser-tab" aria-selected="true" aria-controls="browser-code" data-code-group="run">Browser</button>
+              <button type="button" role="tab" id="node-tab" aria-selected="false" aria-controls="node-code" tabindex="-1" data-code-group="run">Node.js</button>
+            </div>
+          </div>
+          <pre id="browser-code" role="tabpanel" aria-labelledby="browser-tab" tabindex="0"><code><span class="code-keyword">import</span> { loadClassifier } <span class="code-keyword">from</span> <span class="code-string">'jimothy/browser'</span>;
+
+<span class="code-keyword">const</span> model = <span class="code-keyword">await</span> loadClassifier(<span class="code-string">'/models/email/'</span>);
+<span class="code-keyword">const</span> { answer } = <span class="code-keyword">await</span> model.predict({
+  from: <span class="code-string">'maya@example.com'</span>,
+  subject: <span class="code-string">'Lunch on Friday?'</span>,
+  body: <span class="code-string">'Are you free around twelve?'</span>
+});
+
+console.log(answer);
+<span class="code-keyword">await</span> model.dispose();</code></pre>
+          <pre id="node-code" role="tabpanel" aria-labelledby="node-tab" tabindex="0" hidden><code><span class="code-keyword">import</span> { loadClassifier } <span class="code-keyword">from</span> <span class="code-string">'jimothy'</span>;
+
+<span class="code-keyword">const</span> model = <span class="code-keyword">await</span> loadClassifier(<span class="code-string">'./models/email'</span>);
+<span class="code-keyword">const</span> { answer } = <span class="code-keyword">await</span> model.predict({
+  from: <span class="code-string">'maya@example.com'</span>,
+  subject: <span class="code-string">'Lunch on Friday?'</span>,
+  body: <span class="code-string">'Are you free around twelve?'</span>
+});
+
+console.log(answer);
+<span class="code-keyword">await</span> model.dispose();</code></pre>
+        </div>
+        <a class="text-link" href="https://github.com/AndrewPrifer/jimothy/blob/master/docs/browser-sdk.md">Browser setup &amp; full API <span aria-hidden="true">↗</span></a>
+      </section>
+
+      <ul class="use-cases" aria-label="Example use cases">
+        <li><h3>Route support tickets</h3><p>Send billing, delivery, and technical questions to the right team.</p></li>
+        <li><h3>Organize your content</h3><p>Tag notes, documents, and saved links as they arrive.</p></li>
+        <li><h3>Make sense of feedback</h3><p>Sort feature requests, bug reports, and customer sentiment.</p></li>
+      </ul>
+    </main>
+
+    <footer class="site-footer"><a href="https://www.npmjs.com/package/jimothy">Get Jimothy on npm <span aria-hidden="true">↗</span></a></footer>
+  </div>
   <script src="./file-help.js"></script>
+  <script type="module" src="./landing.js"></script>
   <script type="module" src="./app.js"></script>
 </body>
 </html>
