@@ -1,8 +1,9 @@
 import { LocalClassifier } from './classifier.js';
 import { applyWebGPUCalibration, readBrowserBundle, sha256 } from './browser-bundle.js';
+import { encoderExtractor } from './encoder-extractor.js';
 import { tfidfExtractor } from './tfidf.js';
 import type { BrowserMetadata, BrowserProgress } from './browser.js';
-import type { FeatureExtractor, MiniLMConfig, Vector } from './types.js';
+import type { FeatureExtractor } from './types.js';
 
 const scope = globalThis as unknown as {
   postMessage(value: unknown): void;
@@ -71,27 +72,6 @@ async function load(args: LoadArgs): Promise<BrowserMetadata> {
     dtype: manifest.features.kind === 'tfidf' ? null : device === 'webgpu' ? 'fp16' : 'q8',
     loadMs: performance.timeOrigin + performance.now() - args.started,
     ...(args.fallbackReason ? { fallbackReason: args.fallbackReason } : {}) };
-}
-
-function encoderExtractor(config: MiniLMConfig, pipe: any): FeatureExtractor {
-  return { config,
-    async encode(texts) {
-      for (let i = 0; i < texts.length; i++) {
-        const ids = pipe.tokenizer(texts[i], { truncation: false, padding: false, return_tensor: false }).input_ids;
-        if (ids.length > config.maxTokens) throw new Error(`Input ${i + 1} has ${ids.length} wordpieces; MiniLM supports ${config.maxTokens}. Extract relevant fields first.`);
-      }
-      const vectors: Vector[] = [];
-      for (let start = 0; start < texts.length; start += 32) {
-        const rows: number[][] = (await pipe(texts.slice(start, start + 32), { pooling: 'mean', normalize: true })).tolist();
-        for (const row of rows) {
-          if (row.length !== config.dimensions || row.some(v => !Number.isFinite(v))) throw new Error('Encoder produced invalid embeddings.');
-          vectors.push({ indices: Uint32Array.from(row, (_, i) => i), values: Float32Array.from(row) });
-        }
-      }
-      return vectors;
-    },
-    async dispose() { await pipe.dispose(); },
-  };
 }
 
 // A failed request must not poison the queue, and ONNX sessions must not overlap.

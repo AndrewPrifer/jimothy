@@ -37,6 +37,7 @@ Training options:
   --teacher-rpm NUMBER   Optional maximum request starts per minute
   --backend minilm|tfidf  Frozen MiniLM (default) or word/bigram TF-IDF
   --encoder DIR          Reuse local encoder assets; offline unless --teacher is used
+  --long-input chunk     Mean-pool token windows when MiniLM input exceeds 256 wordpieces
   --validation FILE      Development data; otherwise grouped 80/20 holdout
   --test FILE            Untouched test set, evaluated after model selection
   --target-accuracy N    Accuracy target for the recommended cutoff (default 0.95)
@@ -51,10 +52,10 @@ The default backend downloads pretrained encoder assets if --encoder is omitted.
 The SDK and predict/evaluate commands never call a model provider or download assets.
 `;
 const teacherFlags = ['teacher', 'teacher-url', 'teacher-key-env', 'teacher-cache', 'teacher-rpm'];
-const names = ['task', 'question', 'data', 'inputs', 'outputs', 'out', 'backend', 'encoder', 'validation', 'test', 'target-accuracy', 'epochs', 'learning-rate', 'l2', 'max-features', 'seed', 'model', 'text', 'state', ...teacherFlags] as const;
+const names = ['task', 'question', 'data', 'inputs', 'outputs', 'out', 'backend', 'encoder', 'long-input', 'validation', 'test', 'target-accuracy', 'epochs', 'learning-rate', 'l2', 'max-features', 'seed', 'model', 'text', 'state', ...teacherFlags] as const;
 const dataFlags = ['task', 'question', 'data', 'inputs', 'outputs'];
 const allowed: Record<string, string[]> = {
-  train: [...dataFlags, ...teacherFlags, 'out', 'backend', 'encoder', 'validation', 'test', 'target-accuracy', 'epochs', 'learning-rate', 'l2', 'max-features', 'seed'],
+  train: [...dataFlags, ...teacherFlags, 'out', 'backend', 'encoder', 'long-input', 'validation', 'test', 'target-accuracy', 'epochs', 'learning-rate', 'l2', 'max-features', 'seed'],
   validate: dataFlags,
   predict: ['model', 'text', 'state', 'data'],
   evaluate: ['model', 'data'],
@@ -90,7 +91,8 @@ async function main(): Promise<void> {
       teacherResponses: dataset.examples.filter(e => e.teacher !== undefined).length });
   } else if (command === 'train') {
     const result = await train({ ...datasetOptions, out: requireString('out'), backend: string('backend') as 'minilm' | 'tfidf' | undefined,
-      encoder: string('encoder'), validation: string('validation'), test: string('test'), targetAccuracy: number('target-accuracy'),
+      encoder: string('encoder'), longInput: string('long-input') as 'chunk' | undefined,
+      validation: string('validation'), test: string('test'), targetAccuracy: number('target-accuracy'),
       epochs: number('epochs'), learningRate: number('learning-rate'), l2: number('l2'), maxFeatures: number('max-features'), seed: number('seed'),
       teacher: string('teacher'), teacherUrl: string('teacher-url'), teacherKeyEnv: string('teacher-key-env'), teacherCache: string('teacher-cache'),
       teacherRpm: number('teacher-rpm'),

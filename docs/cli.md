@@ -26,6 +26,7 @@ These are alternatives, not sequential commands. Training refuses an existing ou
 | `--out DIR` | Required new model output directory. |
 | `--backend minilm\|tfidf` | `minilm` by default; TF-IDF needs no encoder assets. |
 | `--encoder DIR` | Copy a previously prepared MiniLM encoder. Otherwise download pretrained assets. |
+| `--long-input chunk` | For MiniLM, split overlength inputs into token windows and pool their embeddings. Default: reject inputs over 256 wordpieces. |
 | `--validation FILE` | Labeled development data; otherwise reserve approximately 20% of the supplied data. |
 | `--test FILE` | Separate labeled data, evaluated after model selection and calibration. |
 | `--target-accuracy N` | Accuracy target for the advisory probability cutoff; default `0.95`. |
@@ -71,9 +72,11 @@ To download a reusable encoder once and train offline from saved examples:
 ```sh
 npx jimothy prepare-encoder --out .cache/minilm
 npx jimothy train --task task.json --data examples.jsonl --encoder .cache/minilm --out models/custom
+npx jimothy train --task task.json --data examples.jsonl --encoder .cache/minilm --long-input chunk --out models/long-input
 ```
 
 `prepare-encoder` downloads only public pretrained assets. Pass its directory to `--encoder`; a model's existing `encoder/` directory also works. Training copies those files into the new bundle, which can then run independently of the source directory.
+`--long-input chunk` is stored in the model bundle and applies identically during training and Node/browser inference. It uses non-overlapping tokenizer windows, mean-pools their normalized embeddings, then normalizes the result. Long inputs cost one encoder pass per window, so measure runtime and accuracy on your own data. The default still rejects overlength inputs.
 
 For a browser app:
 

@@ -22,6 +22,7 @@ npx jimothy predict --model models/support --text "I was charged twice"
 ```
 
 This uses the default MiniLM backend, which downloads and bundles its pretrained encoder during training. Keep the entire output directory together when moving or deploying a model.
+For longer inputs, opt in with `--long-input chunk`; the default length error remains. See the [CLI reference](docs/cli.md).
 
 ## CLI
 
