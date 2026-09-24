@@ -67,7 +67,9 @@ The Node SDK uses ONNX Runtime through Transformers.js for MiniLM; the linear he
 
 ## Architecture and input limits
 
-MiniLM is the default; if `--encoder` is omitted, training downloads and bundles its public assets. The encoder is the q8 ONNX export of `Xenova/all-MiniLM-L6-v2`, with masked mean pooling and normalisation. Its immutable upstream revision and asset checksums are saved in the bundle. Inputs longer than **256 wordpieces, including special tokens, are rejected**, not truncated. It is intended for short English text.
+MiniLM is the default; if `--encoder` is omitted, training downloads and bundles its public assets. The default encoder is the q8 ONNX export of `Xenova/all-MiniLM-L6-v2`, with masked mean pooling and normalisation. Its immutable upstream revision and asset checksums are saved in the bundle. Its inputs longer than **256 wordpieces, including special tokens, are rejected**, not truncated. It is intended for short English text.
+
+Use `--encoder-model Xenova/multilingual-e5-small` or prepare that encoder separately for multilingual text. Compatible custom encoders need a q8 ONNX feature-extraction export with the standard asset names; dimensions and token limit come from the bundled model and tokenizer configuration. E5 inputs should use `--encoder-prefix 'query: '`. The same prefix is applied and counted at training and inference in Node and the browser. Custom encoders still reject overlength inputs; the model's manifest records its limit. Check the upstream model license before redistributing a bundle.
 
 TF-IDF uses lowercase, Unicode-normalised word unigrams and bigrams, sublinear term frequencies, smoothed inverse document frequencies, and L2 normalisation. Its vocabulary is learned from the training split only. It supports up to 4,096 word tokens per input. MiniLM and TF-IDF both train a linear softmax head with full-batch Adam and soft-target cross entropy. Encoder fine-tuning is not implemented in v0.1.
 

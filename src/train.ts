@@ -17,6 +17,8 @@ export interface TrainOptions extends DatasetOptions {
   out: string;
   backend?: 'minilm' | 'tfidf';
   encoder?: string;
+  encoderModel?: string;
+  encoderPrefix?: string;
   validation?: string;
   test?: string;
   epochs?: number;
@@ -53,7 +55,8 @@ export async function train(options: TrainOptions) {
   if (!options.out) throw new Error('--out is required.');
   const backend = options.backend ?? 'minilm';
   if (!['minilm', 'tfidf'].includes(backend)) throw new Error('--backend must be minilm or tfidf.');
-  if (options.encoder && backend !== 'minilm') throw new Error('--encoder only applies to the minilm backend.');
+  if ((options.encoder || options.encoderModel || options.encoderPrefix !== undefined) && backend !== 'minilm') throw new Error('Encoder options only apply to the minilm backend.');
+  if (options.encoderPrefix !== undefined && (typeof options.encoderPrefix !== 'string' || options.encoderPrefix.length > 256)) throw new Error('--encoder-prefix must be text of at most 256 characters.');
   const epochs = integer(options.epochs ?? 200, 1, 10_000, 'epochs');
   const maxFeatures = integer(options.maxFeatures ?? 4096, 1, 100_000, 'max-features');
   const seed = integer(options.seed ?? 42, 0, 2 ** 32 - 1, 'seed');
@@ -123,8 +126,9 @@ export async function train(options: TrainOptions) {
   try {
     const started = performance.now();
     if (backend === 'minilm') {
-      options.onProgress?.(options.encoder ? 'Bundling the local MiniLM encoder…' : 'Downloading public MiniLM encoder assets; training inputs stay local…');
-      const config = await prepareEncoder(join(staging, 'encoder'), options.encoder);
+      options.onProgress?.(options.encoder ? 'Bundling the local encoder…' : 'Downloading public encoder assets; training inputs stay local…');
+      const config = await prepareEncoder(join(staging, 'encoder'), options.encoder, options.encoderModel);
+      if (options.encoderPrefix) config.inputPrefix = options.encoderPrefix;
       extractor = await minilmExtractor(config, staging);
     } else extractor = tfidfExtractor(fitTfidf(split.train.map(e => e.text), maxFeatures));
     options.onProgress?.(`Encoding ${split.train.length} training and ${split.validation.length} development examples once…`);

@@ -29,12 +29,13 @@ export interface TfidfConfig {
 }
 export interface MiniLMConfig {
   kind: 'minilm';
-  dimensions: 384;
-  maxTokens: 256;
+  dimensions: number;
+  maxTokens: number;
   directory: 'encoder';
   modelId: string;
   revision: string;
   dtype: 'q8';
+  inputPrefix?: string;
 }
 export type FeatureConfig = TfidfConfig | MiniLMConfig;
 export interface Head { weights: number[][]; bias: number[] }
