@@ -22,7 +22,7 @@ Usage:
   jimothy predict --model model-dir --data inputs.jsonl
   jimothy evaluate --model model-dir --data held-out.jsonl
   jimothy inspect --model model-dir
-  jimothy prepare-encoder --out encoder-dir
+  jimothy prepare-encoder --out encoder-dir [--encoder-model owner/model]
   jimothy prepare-browser --out public/jimothy
 
 Training options:
@@ -35,8 +35,10 @@ Training options:
   --teacher-key-env NAME API key variable (default: AI_GATEWAY_API_KEY)
   --teacher-cache DIR    Resume saved labels (default: <out>.teacher)
   --teacher-rpm NUMBER   Optional maximum request starts per minute
-  --backend minilm|tfidf  Frozen MiniLM (default) or word/bigram TF-IDF
+  --backend minilm|tfidf  Frozen encoder (MiniLM by default) or word/bigram TF-IDF
   --encoder DIR          Reuse local encoder assets; offline unless --teacher is used
+  --encoder-model ID     Hugging Face owner/model ID (default: Xenova/all-MiniLM-L6-v2)
+  --encoder-prefix TEXT  Prefix every training and prediction input (e.g. 'query: ')
   --validation FILE      Development data; otherwise grouped 80/20 holdout
   --test FILE            Untouched test set, evaluated after model selection
   --target-accuracy N    Accuracy target for the recommended cutoff (default 0.95)
@@ -51,15 +53,15 @@ The default backend downloads pretrained encoder assets if --encoder is omitted.
 The SDK and predict/evaluate commands never call a model provider or download assets.
 `;
 const teacherFlags = ['teacher', 'teacher-url', 'teacher-key-env', 'teacher-cache', 'teacher-rpm'];
-const names = ['task', 'question', 'data', 'inputs', 'outputs', 'out', 'backend', 'encoder', 'validation', 'test', 'target-accuracy', 'epochs', 'learning-rate', 'l2', 'max-features', 'seed', 'model', 'text', 'state', ...teacherFlags] as const;
+const names = ['task', 'question', 'data', 'inputs', 'outputs', 'out', 'backend', 'encoder', 'encoder-model', 'encoder-prefix', 'validation', 'test', 'target-accuracy', 'epochs', 'learning-rate', 'l2', 'max-features', 'seed', 'model', 'text', 'state', ...teacherFlags] as const;
 const dataFlags = ['task', 'question', 'data', 'inputs', 'outputs'];
 const allowed: Record<string, string[]> = {
-  train: [...dataFlags, ...teacherFlags, 'out', 'backend', 'encoder', 'validation', 'test', 'target-accuracy', 'epochs', 'learning-rate', 'l2', 'max-features', 'seed'],
+  train: [...dataFlags, ...teacherFlags, 'out', 'backend', 'encoder', 'encoder-model', 'encoder-prefix', 'validation', 'test', 'target-accuracy', 'epochs', 'learning-rate', 'l2', 'max-features', 'seed'],
   validate: dataFlags,
   predict: ['model', 'text', 'state', 'data'],
   evaluate: ['model', 'data'],
   inspect: ['model'],
-  'prepare-encoder': ['out'],
+  'prepare-encoder': ['out', 'encoder-model'],
   'prepare-browser': ['out'],
 };
 
@@ -90,7 +92,8 @@ async function main(): Promise<void> {
       teacherResponses: dataset.examples.filter(e => e.teacher !== undefined).length });
   } else if (command === 'train') {
     const result = await train({ ...datasetOptions, out: requireString('out'), backend: string('backend') as 'minilm' | 'tfidf' | undefined,
-      encoder: string('encoder'), validation: string('validation'), test: string('test'), targetAccuracy: number('target-accuracy'),
+      encoder: string('encoder'), encoderModel: string('encoder-model'), encoderPrefix: string('encoder-prefix'),
+      validation: string('validation'), test: string('test'), targetAccuracy: number('target-accuracy'),
       epochs: number('epochs'), learningRate: number('learning-rate'), l2: number('l2'), maxFeatures: number('max-features'), seed: number('seed'),
       teacher: string('teacher'), teacherUrl: string('teacher-url'), teacherKeyEnv: string('teacher-key-env'), teacherCache: string('teacher-cache'),
       teacherRpm: number('teacher-rpm'),
@@ -135,8 +138,8 @@ async function main(): Promise<void> {
     await mkdir(dirname(destination), { recursive: true });
     const staging = await mkdtemp(join(dirname(destination), `.${basename(destination)}-`));
     try {
-      console.error('Downloading public pretrained MiniLM assets…');
-      const config = await prepareEncoder(staging);
+      console.error('Downloading public pretrained encoder assets…');
+      const config = await prepareEncoder(staging, undefined, string('encoder-model'));
       await rename(staging, destination);
       print({ ...config, directory: destination });
     } catch (error) { await rm(staging, { recursive: true, force: true }); throw error; }

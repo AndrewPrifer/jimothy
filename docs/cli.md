@@ -25,7 +25,9 @@ These are alternatives, not sequential commands. Training refuses an existing ou
 | `--outputs FILE` | Saved answers matched to `--inputs` by ID. |
 | `--out DIR` | Required new model output directory. |
 | `--backend minilm\|tfidf` | `minilm` by default; TF-IDF needs no encoder assets. |
-| `--encoder DIR` | Copy a previously prepared MiniLM encoder. Otherwise download pretrained assets. |
+| `--encoder DIR` | Copy previously prepared encoder assets. Otherwise download pretrained assets. |
+| `--encoder-model ID` | Hugging Face `owner/model` ID for a compatible q8 ONNX encoder; defaults to `Xenova/all-MiniLM-L6-v2`. With `--encoder`, the ID must match the prepared source. |
+| `--encoder-prefix TEXT` | Prefix each input during training and inference; stored in the model bundle. For multilingual E5, use `query: ` (including the space). |
 | `--validation FILE` | Labeled development data; otherwise reserve approximately 20% of the supplied data. |
 | `--test FILE` | Separate labeled data, evaluated after model selection and calibration. |
 | `--target-accuracy N` | Accuracy target for the advisory probability cutoff; default `0.95`. |
@@ -71,9 +73,13 @@ To download a reusable encoder once and train offline from saved examples:
 ```sh
 npx jimothy prepare-encoder --out .cache/minilm
 npx jimothy train --task task.json --data examples.jsonl --encoder .cache/minilm --out models/custom
+
+npx jimothy prepare-encoder --encoder-model Xenova/multilingual-e5-small --out .cache/e5
+npx jimothy train --task task.json --data examples.jsonl --encoder .cache/e5 --encoder-prefix 'query: ' --out models/multilingual
 ```
 
 `prepare-encoder` downloads only public pretrained assets. Pass its directory to `--encoder`; a model's existing `encoder/` directory also works. Training copies those files into the new bundle, which can then run independently of the source directory.
+Custom models must expose `config.json`, `tokenizer.json`, `tokenizer_config.json`, `special_tokens_map.json`, and `onnx/model_quantized.onnx` compatible with Transformers.js feature extraction. The CLI derives dimensions and token limit from the model files. Check the chosen model's license before redistributing its bundle; some model repositories do not include a license file.
 
 For a browser app:
 
@@ -81,7 +87,7 @@ For a browser app:
 npx jimothy prepare-browser --out public/jimothy
 ```
 
-This copies the installed browser worker and runtime assets without network access. Install optional dependencies to use this command. Both preparation commands require a new output directory and accept only `--out`. See the [browser SDK guide](browser-sdk.md) for model hosting and loading.
+This copies the installed browser worker and runtime assets without network access. Install optional dependencies to use this command. Both preparation commands require a new output directory; `prepare-encoder` also accepts `--encoder-model`. See the [browser SDK guide](browser-sdk.md) for model hosting and loading.
 
 ## Train with a teacher
 

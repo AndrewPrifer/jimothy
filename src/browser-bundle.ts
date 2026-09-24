@@ -38,7 +38,8 @@ export async function applyWebGPUCalibration(manifest: Manifest, value: unknown,
       encoder.modelId !== features.modelId || encoder.revision !== features.revision || encoder.dtype !== 'fp16' ||
       typeof encoder.sha256 !== 'string' || !/^[a-f0-9]{64}$/.test(encoder.sha256) ||
       canonical(provenance.runtime) !== canonical(runtime) || provenance.device !== 'webgpu' ||
-      provenance.preprocessing !== manifest.preprocessing || provenance.pooling !== 'mean' || provenance.normalize !== true || provenance.maxTokens !== features.maxTokens) {
+      provenance.preprocessing !== manifest.preprocessing || provenance.pooling !== 'mean' || provenance.normalize !== true || provenance.maxTokens !== features.maxTokens ||
+      (provenance.inputPrefix ?? '') !== (features.inputPrefix ?? '')) {
     throw new Error('WebGPU calibration does not match this model, encoder, or browser runtime.');
   }
   const calibration = object(policy.calibration, 'WebGPU calibration');

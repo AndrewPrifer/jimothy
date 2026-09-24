@@ -21,7 +21,7 @@ npx jimothy train \
 npx jimothy predict --model models/support --text "I was charged twice"
 ```
 
-This uses the default MiniLM backend, which downloads and bundles its pretrained encoder during training. Keep the entire output directory together when moving or deploying a model.
+This uses the default MiniLM backend, which downloads and bundles its pretrained encoder during training. Keep the entire output directory together when moving or deploying a model. For multilingual inputs, use a compatible encoder such as `--encoder-model Xenova/multilingual-e5-small --encoder-prefix 'query: '`; see the [CLI reference](docs/cli.md).
 
 ## CLI
 

@@ -76,13 +76,14 @@ async function load(args: LoadArgs): Promise<BrowserMetadata> {
 function encoderExtractor(config: MiniLMConfig, pipe: any): FeatureExtractor {
   return { config,
     async encode(texts) {
-      for (let i = 0; i < texts.length; i++) {
-        const ids = pipe.tokenizer(texts[i], { truncation: false, padding: false, return_tensor: false }).input_ids;
-        if (ids.length > config.maxTokens) throw new Error(`Input ${i + 1} has ${ids.length} wordpieces; MiniLM supports ${config.maxTokens}. Extract relevant fields first.`);
+      const inputs = texts.map(text => `${config.inputPrefix ?? ''}${text}`);
+      for (let i = 0; i < inputs.length; i++) {
+        const ids = pipe.tokenizer(inputs[i], { truncation: false, padding: false, return_tensor: false }).input_ids;
+        if (ids.length > config.maxTokens) throw new Error(`Input ${i + 1} has ${ids.length} wordpieces; encoder supports ${config.maxTokens}. Extract relevant fields first.`);
       }
       const vectors: Vector[] = [];
-      for (let start = 0; start < texts.length; start += 32) {
-        const rows: number[][] = (await pipe(texts.slice(start, start + 32), { pooling: 'mean', normalize: true })).tolist();
+      for (let start = 0; start < inputs.length; start += 32) {
+        const rows: number[][] = (await pipe(inputs.slice(start, start + 32), { pooling: 'mean', normalize: true })).tolist();
         for (const row of rows) {
           if (row.length !== config.dimensions || row.some(v => !Number.isFinite(v))) throw new Error('Encoder produced invalid embeddings.');
           vectors.push({ indices: Uint32Array.from(row, (_, i) => i), values: Float32Array.from(row) });

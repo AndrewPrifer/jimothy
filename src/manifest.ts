@@ -33,9 +33,12 @@ export function parseManifest(value: unknown): Manifest {
       !Number.isInteger(features.maxTokens) || Number(features.maxTokens) < 1 || Number(features.maxTokens) > 100_000) throw new Error('Invalid TF-IDF feature configuration.');
     dimensions = features.vocabulary.length;
   } else if (features.kind === 'minilm') {
-    if (features.directory !== 'encoder' || features.dimensions !== 384 || features.maxTokens !== 256 || features.dtype !== 'q8' ||
-        features.modelId !== 'Xenova/all-MiniLM-L6-v2' || typeof features.revision !== 'string' || !/^[a-f0-9]{40}$/.test(features.revision)) throw new Error('Invalid MiniLM feature configuration.');
-    dimensions = 384;
+    if (features.directory !== 'encoder' || !Number.isInteger(features.dimensions) || Number(features.dimensions) < 1 || Number(features.dimensions) > 100_000 ||
+        !Number.isInteger(features.maxTokens) || Number(features.maxTokens) < 2 || Number(features.maxTokens) > 100_000 || features.dtype !== 'q8' ||
+        typeof features.modelId !== 'string' || !/^[A-Za-z0-9][\w.-]*\/[A-Za-z0-9][\w.-]*$/.test(features.modelId) ||
+        typeof features.revision !== 'string' || !/^[a-f0-9]{40}$/.test(features.revision) ||
+        (features.inputPrefix !== undefined && (typeof features.inputPrefix !== 'string' || features.inputPrefix.length > 256))) throw new Error('Invalid encoder feature configuration.');
+    dimensions = Number(features.dimensions);
   } else throw new Error('Unknown feature backend.');
   const head = object(raw.head, 'head');
   const finite = (v: unknown) => typeof v === 'number' && Number.isFinite(v);
