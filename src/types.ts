@@ -31,6 +31,7 @@ export interface MiniLMConfig {
   kind: 'minilm';
   dimensions: 384;
   maxTokens: 256;
+  longInput?: 'chunk';
   directory: 'encoder';
   modelId: string;
   revision: string;

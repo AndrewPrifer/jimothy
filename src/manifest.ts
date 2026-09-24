@@ -33,7 +33,8 @@ export function parseManifest(value: unknown): Manifest {
       !Number.isInteger(features.maxTokens) || Number(features.maxTokens) < 1 || Number(features.maxTokens) > 100_000) throw new Error('Invalid TF-IDF feature configuration.');
     dimensions = features.vocabulary.length;
   } else if (features.kind === 'minilm') {
-    if (features.directory !== 'encoder' || features.dimensions !== 384 || features.maxTokens !== 256 || features.dtype !== 'q8' ||
+    if (features.directory !== 'encoder' || features.dimensions !== 384 || features.maxTokens !== 256 ||
+        (features.longInput !== undefined && features.longInput !== 'chunk') || features.dtype !== 'q8' ||
         features.modelId !== 'Xenova/all-MiniLM-L6-v2' || typeof features.revision !== 'string' || !/^[a-f0-9]{40}$/.test(features.revision)) throw new Error('Invalid MiniLM feature configuration.');
     dimensions = 384;
   } else throw new Error('Unknown feature backend.');

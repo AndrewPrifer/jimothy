@@ -69,6 +69,8 @@ The Node SDK uses ONNX Runtime through Transformers.js for MiniLM; the linear he
 
 MiniLM is the default; if `--encoder` is omitted, training downloads and bundles its public assets. The encoder is the q8 ONNX export of `Xenova/all-MiniLM-L6-v2`, with masked mean pooling and normalisation. Its immutable upstream revision and asset checksums are saved in the bundle. Inputs longer than **256 wordpieces, including special tokens, are rejected**, not truncated. It is intended for short English text.
 
+`train --long-input chunk` opts into non-overlapping tokenizer windows for overlength MiniLM inputs. Each window is embedded with the usual mean pooling and normalization; the window vectors are averaged and normalized into one feature vector. The mode is recorded in `model.json` and used by both Node and browser inference. Inputs within the limit keep their existing embedding path. Each extra window adds encoder work; evaluate latency and model quality separately for this mode.
+
 TF-IDF uses lowercase, Unicode-normalised word unigrams and bigrams, sublinear term frequencies, smoothed inverse document frequencies, and L2 normalisation. Its vocabulary is learned from the training split only. It supports up to 4,096 word tokens per input. MiniLM and TF-IDF both train a linear softmax head with full-batch Adam and soft-target cross entropy. Encoder fine-tuning is not implemented in v0.1.
 
 ## Evaluation and reproducibility

@@ -17,6 +17,7 @@ export interface TrainOptions extends DatasetOptions {
   out: string;
   backend?: 'minilm' | 'tfidf';
   encoder?: string;
+  longInput?: 'chunk';
   validation?: string;
   test?: string;
   epochs?: number;
@@ -53,7 +54,8 @@ export async function train(options: TrainOptions) {
   if (!options.out) throw new Error('--out is required.');
   const backend = options.backend ?? 'minilm';
   if (!['minilm', 'tfidf'].includes(backend)) throw new Error('--backend must be minilm or tfidf.');
-  if (options.encoder && backend !== 'minilm') throw new Error('--encoder only applies to the minilm backend.');
+  if ((options.encoder || options.longInput) && backend !== 'minilm') throw new Error('Encoder options only apply to the minilm backend.');
+  if (options.longInput !== undefined && options.longInput !== 'chunk') throw new Error('--long-input must be chunk.');
   const epochs = integer(options.epochs ?? 200, 1, 10_000, 'epochs');
   const maxFeatures = integer(options.maxFeatures ?? 4096, 1, 100_000, 'max-features');
   const seed = integer(options.seed ?? 42, 0, 2 ** 32 - 1, 'seed');
@@ -125,6 +127,7 @@ export async function train(options: TrainOptions) {
     if (backend === 'minilm') {
       options.onProgress?.(options.encoder ? 'Bundling the local MiniLM encoder…' : 'Downloading public MiniLM encoder assets; training inputs stay local…');
       const config = await prepareEncoder(join(staging, 'encoder'), options.encoder);
+      if (options.longInput) config.longInput = options.longInput;
       extractor = await minilmExtractor(config, staging);
     } else extractor = tfidfExtractor(fitTfidf(split.train.map(e => e.text), maxFeatures));
     options.onProgress?.(`Encoding ${split.train.length} training and ${split.validation.length} development examples once…`);

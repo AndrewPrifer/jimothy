@@ -1,6 +1,7 @@
 import { mkdir, readFile, writeFile, copyFile } from 'node:fs/promises';
 import { resolve, dirname, join } from 'node:path';
-import type { FeatureExtractor, MiniLMConfig, Vector } from './types.js';
+import type { FeatureExtractor, MiniLMConfig } from './types.js';
+import { encoderExtractor } from './encoder-extractor.js';
 
 const MODEL_ID = 'Xenova/all-MiniLM-L6-v2';
 import { ENCODER_FILES } from './manifest.js';
@@ -50,26 +51,5 @@ export async function minilmExtractor(config: MiniLMConfig, bundleDirectory: str
     dtype: 'q8', device: 'cpu', local_files_only: true,
     session_options: { intraOpNumThreads: 1, interOpNumThreads: 1 },
   });
-  return {
-    config,
-    async encode(texts) {
-      // Check length before the pipeline can silently truncate. This includes special tokens.
-      for (let i = 0; i < texts.length; i++) {
-        const tokenized = pipe.tokenizer(texts[i], { truncation: false, padding: false, return_tensor: false });
-        const ids = tokenized.input_ids as number[];
-        if (ids.length > config.maxTokens) throw new Error(`Input ${i + 1} has ${ids.length} wordpieces; MiniLM supports ${config.maxTokens}. Extract relevant fields first.`);
-      }
-      const vectors: Vector[] = [];
-      for (let start = 0; start < texts.length; start += 32) {
-        const result = await pipe(texts.slice(start, start + 32), { pooling: 'mean', normalize: true });
-        const rows = result.tolist() as number[][];
-        for (const row of rows) {
-          if (row.length !== config.dimensions || row.some(v => !Number.isFinite(v))) throw new Error('Encoder produced invalid embeddings.');
-          vectors.push({ indices: Uint32Array.from(row, (_, i) => i), values: Float32Array.from(row) });
-        }
-      }
-      return vectors;
-    },
-    async dispose() { await pipe.dispose(); },
-  };
+  return encoderExtractor(config, pipe);
 }
